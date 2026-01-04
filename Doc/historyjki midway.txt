@@ -1,0 +1,57 @@
+# wymiary - decydujące informacje:
+1. akcja użytkownika: 
+1.1 hex, 
+1.2 strzałka, 
+1.3 deklaracja ataku, 
+1.4 kliknięcie za mapą
+2. zawartość klikniętego hexa (tylko dla 1.1): 
+2.1 pusty, 
+2.2 własny samolot zdolny do ruchu/ataku, 
+2.3 własny samolot po ruchu/ataku, 
+2.4 obcy samolot
+3. zawartość hexa do którego prowadzi strzałka (tylko dla 1.2): 
+3.1 pusty hex, 
+3.2 nieistniejący hex za mapą, 
+3.3 hex z samolotem
+4. czy był aktywny samolot / czy widać było strzałki ruchu i ikony ataku / czy poprzednio zaznaczony hex zawierał włąsny samolot zdolny do ruchu/ataku (tylko dla 1.1, 1.4)
+4.1 tak
+4.2 nie
+5. czy możliwy dalszy ruch (tylko dla 1.2)
+5.1 tak
+5.2 nie
+
+# skróty:
+zaznaczenie hexa, strzałki ruchu, ikony ataku na obcych samolotach w promieniu 5 hexów, dodatkowo ewentualne podświetlenie hexów osiągalnych ruchem w tej turze - to wszystko jako całość nazywamy overlay/kontrolki
+planowanie 2 ruchów w walce, podgląd pól ostrzału, dobieranie akcji i obsługa konsekwencji akcji (kolejny ruch/cofnięcie ruchu/wskazanie przesunięcia) itp. - dogfight overlay/kontrolki walki
+
+# historyjki:
+1.1 && 2.2: pokazują się kontrolki
+1.1 && 2.1 && 4.2: nic
+1.1 && 2.1 && 4.1: znikają kontrolki
+...
+
+# historyjki w formie kombinacji:
+
+1. akcja gracza:	| 2. zawartość klikniętego hexa:			| 3. docelowegy hex:	| 4. czy akt. samolot (kontrolki)	| 5. czy ma ruch po	| 6. czy w trakcie ruchu	| REZULTAT	
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1.1 hex				| 2.1 pusty									|						| 4.2 nie							|					| 							| nic
+1.1 hex				| 2.1 pusty									|						| 4.1 tak							|					| 							| znikają kontrolki
+1.1 hex				| 2.4 obcy samolot							|						| 4.2 nie							|					| 							| nic
+1.1 hex				| 2.4 obcy samolot							|						| 4.1 tak							|					| 							| znikają kontrolki
+1.1 hex				| 2.3 własny samolot po ruchu/ataku			|						| 4.2 nie							|					| 							| nic
+1.1 hex				| 2.3 własny samolot po ruchu/ataku			|						| 4.1 tak							|					| 							| znikają kontrolki
+1.1 hex				| 2.2 własny samolot zdolny do ruchu/ataku	|						| 4.2 nie							|					| 6.1 nie					| pojawiają się kontrolki 
+1.1 hex				| 2.2 własny samolot zdolny do ruchu/ataku	|						| 4.2 nie							|					| 6.2 tak					| pojawiają się kontrolki (tylko ruch)
+1.1 hex				| 2.2 własny samolot zdolny do ruchu/ataku	|						| 4.2 tak							|					| 6.1 nie					| znikają kontrolki z poprzedniego miejsca, pojawiają się kontrolki
+1.1 hex				| 2.2 własny samolot zdolny do ruchu/ataku	|						| 4.2 tak							|					| 6.2 tak					| znikają kontrolki z poprzedniego miejsca, pojawiają się kontrolki (tylko ruch)
+1.2 strzałka		| 											| 3.1 pusty hex			| 									| 5.1 tak			| 6.1 nie					| ruch samolotu, znikają kontrolki z dawnego miejsca, pojawiają się kontrolki
+1.2 strzałka		| 											| 3.1 pusty hex			| 									| 5.1 tak			| 6.2 tak					| ruch samolotu, znikają kontrolki z dawnego miejsca, pojawiają się kontrolki (tylko ruch)
+1.2 strzałka		| 											| 3.1 pusty hex			| 									| 5.1 nie			| 							| ruch samolotu, znikają kontrolki z dawnego miejsca
+1.2 strzałka		| 											| 3.2 hex za mapą		| 									| 					| 							| ruch samolotu, zniszczenie samolotu, znikają kontrolki z dawnego miejsca
+1.2 strzałka		| 											| 3.3 hex z samolotem	| 									| 5.1 tak			| 6.1 nie					| ruch samolotu z zamianą, znikają kontrolki z dawnego miejsca, pojawiają się kontrolki
+1.2 strzałka		| 											| 3.3 hex z samolotem	| 									| 5.1 tak			| 6.2 tak					| ruch samolotu z zamianą, znikają kontrolki z dawnego miejsca, pojawiają się kontrolki (tylko ruch)
+
+1.2 strzałka		| 											| 3.3 hex z samolotem	| 									| 5.1 nie			| 							| ruch samolotu z zamianą, znikają kontrolki z dawnego miejsca
+1.3 atak			|											|						|									|					| 							| pojawiają się kontrolki walki
+1.4 za mapą			|											|						| 4.2 nie							|					| 							| nic
+1.4 za mapą			|											|						| 4.1 tak							|					| 							| znikają kontrolki
