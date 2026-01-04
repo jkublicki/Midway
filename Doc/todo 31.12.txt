@@ -1,0 +1,9 @@
+//napisać funkcje w hextools do liczenia dystansu
+//ważne - wymienić użycie tagów na użycie pseudotagów będących publicznym polem skryptu elementu overlay - bo attack buttonow moze byc duzo, orkiestrator musi wiedziec ktory
+
+>>>> kontunuować orkiestrator
+
+jak skoncze orkiestrator, to wrzucic go do claude niech przejrzy pod katem mozliwosci redukcji, np. przez ustalanie stanu raz, a nie osobno dla hex i overlay
+orkiestrator za bardzo sie rozrosl. .. ale helper moze wymagac przekazywania danych... ponownie zaimplemenotwac obsluge akcji poczatkowo w orkiestratorze, a potem zobacyz rozrost i potrzebne dne
+
+do klasy unit manager dodac funkcje enemies in range - będzie ja wolac orkiestrator

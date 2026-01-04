@@ -1,0 +1,10 @@
+teraz:
+
+usunąć z rule executura passthrough!
+opisac/nazwac input service ze to skomplikowana klasa nadrzedna do executora:
+- przyjmuje input
+- dodaje kontekst
+- woła executora
+- obsługuje output executora
+
+dodatkowo rozwiązać problem, że klik przechodzi przez strzałkę do hexa, bo to będzie skutować dwoma wywołaniami input service dla jednego klikniecia
