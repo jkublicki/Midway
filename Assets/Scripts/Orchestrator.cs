@@ -280,9 +280,19 @@ public class Orchestrator : MonoBehaviour
         scene.Unit.MoveRight(unit);
     }
 
-    private void ServiceActionShowCombatMenu(UnitManager.Unit attackedUnit)
+    private void ServiceActionShowCombatMenu(UnitManager.Unit attackedUnit, UnitManager.Unit activeUnit)
     {
-        scene.CombatOverlay.ShowCombatOverlay();
+        //chyba do zastapienia powiadomieniem do combat managera i niech on ogarnia wyswietlanie interfejsow
+        //i to powinno byc nie show combat menu, tylko initalize combat - obudzenie managera walki
+        //cancel combat tez niech idzie przez silnik, bo trzeba m.in. przywrocic overlay; dodatkowo finish i przy finish combat nie przywracac overlay
+        //do tego bedzie potrzebne service ui click
+
+        //scene.CombatOverlay.ShowCombatOverlayPanel();
+        //scene.CombatOverlay.DisplayArrows(activeUnit.HexCoords, activeUnit.Direction);
+        //scene.CombatOverlay.DisplayOwnHighlight(activeUnit.HexCoords);
+        //scene.CombatOverlay.DisplayEnemyHighlight(attackedUnit.HexCoords);
+
+        scene.CombatManager.Initialize(activeUnit, attackedUnit);
     }
 
     private void ServiceActionSwapUnitsLeft(UnitManager.Unit unit)
@@ -353,7 +363,7 @@ public class Orchestrator : MonoBehaviour
                     ServiceActionShowMoveOverlay(activeUnit);
                     break;
                 case RuleEngine.ResultingActionE.SHOW_COMBAT_MENU:
-                    ServiceActionShowCombatMenu(attackedUnit);
+                    ServiceActionShowCombatMenu(attackedUnit, activeUnit);
                     break;
                 case ResultingActionE.SWAP_UNITS_LEFT:
                     ServiceActionSwapUnitsLeft(activeUnit);

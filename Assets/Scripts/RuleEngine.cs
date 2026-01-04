@@ -128,7 +128,7 @@ public static class RuleEngine
 
 
 
-        { new Condition(InputTargetE.ATTACK, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.SHOW_COMBAT_MENU } },
+        { new Condition(InputTargetE.ATTACK, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.SHOW_COMBAT_MENU } },
         { new Condition(InputTargetE.OFF_MAP, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.FALSE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { } },
         { new Condition(InputTargetE.OFF_MAP, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.TRUE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY } }
 

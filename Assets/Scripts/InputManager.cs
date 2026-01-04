@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -23,6 +24,27 @@ public class InputManager : MonoBehaviour
         {
             HandleClick();
         }
+
+
+        //proste interakcje obs³u¿one w prosty sposob
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            scene.CameraManager.Pan(CameraManager.PanDirectionE.Left);
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            scene.CameraManager.Pan(CameraManager.PanDirectionE.Right);
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            scene.CameraManager.Pan(CameraManager.PanDirectionE.Up);
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            scene.CameraManager.Pan(CameraManager.PanDirectionE.Down);
+        }
+
+
     }
 
     private void HandleClick()

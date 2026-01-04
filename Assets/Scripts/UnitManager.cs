@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using TMPro;
 using Unity.VisualScripting;
 //using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static RuleEngine;
+using static UnitManager;
 
 public class UnitManager : MonoBehaviour
 {
@@ -43,6 +45,19 @@ public class UnitManager : MonoBehaviour
             Player = _player;
             MovesThisTurn = 0;
             AttackedThisTurn = false;
+        }
+
+        //konstruktor kopiujacy
+        public Unit(Unit original)
+        {
+            HexCoords = original.HexCoords; //struct sie skopiuje
+            GmObject = original.GmObject; //kopiowanie referencji
+            UnitType = original.UnitType;
+            Direction = original.Direction;
+            ID = original.ID;
+            Player = original.Player;
+            MovesThisTurn = original.MovesThisTurn;
+            AttackedThisTurn = original.AttackedThisTurn;
         }
 
         public HexCoords HexCoords;
