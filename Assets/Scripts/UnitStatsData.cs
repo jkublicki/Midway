@@ -27,12 +27,19 @@ public static class UnitStatsData
     {
         //oczywiœcie mo¿na 4, 3 zamiast maxMoves: 4, ale tak czytleniej
         { UnitType.US_FIGHTER, new UnitStats(maxMoves: 4, minMoves: 3, new Dictionary<InteractionAreaTypeE, List<HexCoords>> 
-            { { InteractionAreaTypeE.ATTACK, HelperVectorSetAttack5() },
-              { InteractionAreaTypeE.US_F_OFFENSIVE_FIRE_ZONE_3_CARDS, HelperVectorSet_US_F_OFFENSIVE_FIRE_ZONE_3_CARDS() }
-            //{ InteractionAreaTypeE.US_F_OFFENSIVE_FIRE_ZONE_2_CARDS} ...pozniej tu beda inne potrzebne sety
+            { { InteractionAreaTypeE.ATTACK_RANGE, HelperVectorSetAttack5() },
+              { InteractionAreaTypeE.FIRE_3, HelperVectorSet_US_F_OFFENSIVE_FIRE_ZONE_3_CARDS() },
+              { InteractionAreaTypeE.FIRE_2, HelperVectorSet_US_F_OFFENSIVE_FIRE_ZONE_2_CARDS() },
+              { InteractionAreaTypeE.DODGE_2, HelperVectorSet_US_F_DEFENSIVE_ZONE_2_CARDS() },
+              { InteractionAreaTypeE.DODGE_1, HelperVectorSet_US_F_DEFENSIVE_ZONE_1_CARDS() }
             }) },
         { UnitType.JP_FIGHTER, new UnitStats(maxMoves: 4, minMoves: 3, new Dictionary<InteractionAreaTypeE, List<HexCoords>>
-            { {InteractionAreaTypeE.ATTACK, HelperVectorSetAttack5() } }) },        
+            { { InteractionAreaTypeE.ATTACK_RANGE, HelperVectorSetAttack5() },
+              { InteractionAreaTypeE.FIRE_3, HelperVectorSet_JP_F_OFFENSIVE_FIRE_ZONE_3_CARDS() },
+              { InteractionAreaTypeE.FIRE_2, HelperVectorSet_JP_F_OFFENSIVE_FIRE_ZONE_2_CARDS() },
+              { InteractionAreaTypeE.DODGE_2, HelperVectorSet_JP_F_DEFENSIVE_ZONE_2_CARDS() },
+              { InteractionAreaTypeE.DODGE_1, HelperVectorSet_JP_F_DEFENSIVE_ZONE_1_CARDS() }
+            }) },        
         { UnitType.US_BOMBER, new UnitStats(maxMoves: 3, minMoves: 2) },
         { UnitType.JP_BOMBER, new UnitStats(maxMoves: 3, minMoves: 2) }
     };
@@ -44,8 +51,11 @@ public static class UnitStatsData
 
     public enum InteractionAreaTypeE
     {
-        ATTACK,
-        US_F_OFFENSIVE_FIRE_ZONE_3_CARDS
+        ATTACK_RANGE,
+        FIRE_3,
+        FIRE_2,
+        DODGE_2,
+        DODGE_1
     }
 
     private static List<HexCoords> HelperVectorSetAttack5()
@@ -64,8 +74,68 @@ public static class UnitStatsData
         return new List<HexCoords> { new HexCoords(0, -1), new HexCoords(0, -2), new HexCoords(0, -3)  };
     }
 
+    private static List<HexCoords> HelperVectorSet_US_F_OFFENSIVE_FIRE_ZONE_2_CARDS()
+    {
+        return new List<HexCoords> { new HexCoords(-3, -0), new HexCoords(-2, -1), new HexCoords(-2, 0), new HexCoords(-1, -2), new HexCoords(-1, -1), new HexCoords(-1, 0),
+            new HexCoords(1, -3), new HexCoords(2, -3), new HexCoords(3, -3), new HexCoords(1, -2), new HexCoords(2, -2), new HexCoords(1, -1) };
+    }
+
+    private static List<HexCoords> HelperVectorSet_US_F_DEFENSIVE_ZONE_2_CARDS()
+    {
+        return new List<HexCoords> { new HexCoords(-3, 1), new HexCoords(-3, 2), new HexCoords(-3, 3), new HexCoords(-2, 1), new HexCoords(-2, 2), new HexCoords(-1, 1),
+            new HexCoords(1, 0), new HexCoords(2, -1), new HexCoords(2, 0), new HexCoords(3, -2), new HexCoords(3, -1), new HexCoords(3, 0) };
+    }
+
+    private static List<HexCoords> HelperVectorSet_US_F_DEFENSIVE_ZONE_1_CARDS()
+    {
+        return new List<HexCoords> { new HexCoords(0, 1), new HexCoords(1, 1), new HexCoords(2, 1), new HexCoords(-1, 2), new HexCoords(0, 2), new HexCoords(1, 2),
+            new HexCoords(-2, 3), new HexCoords(-1, 3), new HexCoords(0, 3) };
+    }
+
+
+
+
+
+
+
+    private static List<HexCoords> HelperVectorSet_JP_F_OFFENSIVE_FIRE_ZONE_3_CARDS()
+    {
+        return new List<HexCoords> { new HexCoords(0, -1), new HexCoords(0, -2), new HexCoords(0, -3), new HexCoords(-2, -1), new HexCoords(-1, -2), new HexCoords(-1, -1),
+            new HexCoords(1, -3), new HexCoords(2, -3), new HexCoords(1, -2) };
+    }
+
+    private static List<HexCoords> HelperVectorSet_JP_F_OFFENSIVE_FIRE_ZONE_2_CARDS()
+    {
+        return new List<HexCoords> { new HexCoords(-3, 0), new HexCoords(-2, 0), new HexCoords(-1, 0),
+            new HexCoords(3, -3), new HexCoords(2, -2), new HexCoords(1, -1) };
+    }
+
+    private static List<HexCoords> HelperVectorSet_JP_F_DEFENSIVE_ZONE_2_CARDS()
+    {
+        return new List<HexCoords> { new HexCoords(-3, 1), new HexCoords(-3, 2), new HexCoords(-3, 3), new HexCoords(-2, 1), new HexCoords(-2, 2), new HexCoords(-1, 1),
+            new HexCoords(1, 0), new HexCoords(2, -1), new HexCoords(2, 0), new HexCoords(3, -2), new HexCoords(3, -1), new HexCoords(3, 0) };
+    }
+
+    private static List<HexCoords> HelperVectorSet_JP_F_DEFENSIVE_ZONE_1_CARDS()
+    {
+        return new List<HexCoords> { new HexCoords(0, 1), new HexCoords(1, 1), new HexCoords(2, 1), new HexCoords(-1, 2), new HexCoords(0, 2), new HexCoords(1, 2),
+            new HexCoords(-2, 3), new HexCoords(-1, 3), new HexCoords(0, 3) };
+    }
+
+
+
+
+
+
+
+
     public static List<HexCoords> InteractionArea(HexCoords unitHex, HexTools.HexDirectionPT unitDirection, UnitManager.UnitType unitType, InteractionAreaTypeE interactionAreaType)
     {
+        if (!stats[unitType].RelativeInteractionAreas.ContainsKey(interactionAreaType))
+        {
+            return new List<HexCoords>();
+        }
+
         //zbior hexow okreslajacy obszar pobrany ze stats dla 0,0 NW
         List<HexCoords> areaModel = stats[unitType].RelativeInteractionAreas[interactionAreaType];
         List<HexCoords> adjustedAreaModel = new List<HexCoords>();

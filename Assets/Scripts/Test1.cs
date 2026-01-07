@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +13,8 @@ public class Test1 : MonoBehaviour
     public Button DebugTurnButton;
 
 
+    public TextMeshProUGUI LogText;
+
 
     private void DebugSwitchPlayer()
     {
@@ -22,6 +26,13 @@ public class Test1 : MonoBehaviour
     void Start()
     {
         DebugTurnButton.onClick.AddListener(DebugSwitchPlayer);
+
+        Application.logMessageReceived += (log, trace, type) =>
+        {
+            var oldLines = LogText.text.Split(new[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            var keepLines = oldLines.Take(3); // weü 2 pierwsze stare linie
+            LogText.text = log + "\r\n" + string.Join("\r\n", keepLines);
+        };
 
 
 
@@ -45,12 +56,13 @@ public class Test1 : MonoBehaviour
         if (!didIt)
         {
             didIt = true;
-            Scene.Highlight.AddOverlay(UnitStatsData.InteractionArea(new HexCoords(3, -1), HexTools.HexDirectionPT.SOUTH_WEST, UnitManager.UnitType.US_FIGHTER,
+            Scene.Highlight.AddOverlay(UnitStatsData.InteractionArea(new HexCoords(0, 0), HexTools.HexDirectionPT.NORTH_WEST, UnitManager.UnitType.JP_FIGHTER,
                 //UnitStatsData.InteractionAreaTypeE.US_F_OFFENSIVE_FIRE_ZONE_3_CARDS));
-                UnitStatsData.InteractionAreaTypeE.ATTACK));
+                UnitStatsData.InteractionAreaTypeE.FIRE_3));
         }
         */
 
+        
 
     }
 }

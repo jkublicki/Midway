@@ -22,7 +22,9 @@ public static class RuleEngine
         ARROW_FORWARD,
         ARROW_RIGHT,
         ATTACK,
-        OFF_MAP
+        OFF_MAP,
+        CANCEL_COMBAT,
+        FINISH_COMBAT //to wyj¹tkowo zdarzenie, a nie input
     }
 
     public enum InputHexContentE
@@ -76,7 +78,8 @@ public static class RuleEngine
         SWAP_UNITS_LEFT,
         SWAP_UNITS_FORWARD,
         SWAP_UNITS_RIGHT,
-        SHOW_COMBAT_MENU
+        //SHOW_COMBAT_MENU
+        INITIALIZE_COMBAT
     }
 
     private static Dictionary<Condition, List<ResultingActionE>> rules = new Dictionary<Condition, List<ResultingActionE>>()
@@ -128,7 +131,12 @@ public static class RuleEngine
 
 
 
-        { new Condition(InputTargetE.ATTACK, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.SHOW_COMBAT_MENU } },
+        { new Condition(InputTargetE.ATTACK, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.INITIALIZE_COMBAT } },
+
+        { new Condition(InputTargetE.CANCEL_COMBAT, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.SHOW_OVERLAY } },
+        { new Condition(InputTargetE.FINISH_COMBAT, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { } },
+
+
         { new Condition(InputTargetE.OFF_MAP, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.FALSE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { } },
         { new Condition(InputTargetE.OFF_MAP, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.TRUE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY } }
 

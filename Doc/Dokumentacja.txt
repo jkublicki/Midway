@@ -2,7 +2,7 @@ załozenia / decyzje architektoniczne
 
 # input
 wszystkie kliknięcia przechwytuje input manager
-analizuje najpierw layer ui, a potem layer water (hexy)
+analizuje najpierw canvas ui (w oparciu o event system), potem layer ui, a potem layer water (hexy)
 każdy element ui ma mieć layer (ui) i ID (pole skryptu) precyzyjnie określające co to za element, oraz skrypt IClickable z dostępem do orkiestratora via referencje sceny
 
 # logika gry

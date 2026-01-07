@@ -54,7 +54,23 @@ public class InputManager : MonoBehaviour
         // First, check for Canvas UI hits (blocks further raycasts if over UI)
         if (EventSystem.current.IsPointerOverGameObject())
         {
-            Debug.Log("IM: Canvas UI clicked");
+            
+
+            // SprawdŸ co zosta³o klikniête
+            GameObject clickedObject = EventSystem.current.currentSelectedGameObject;
+            if (clickedObject != null)
+            {
+                IClickable clickable = clickedObject.GetComponent<IClickable>();
+                if (clickable != null)
+                {
+                    Debug.Log("IM: Clickable canvas UI clicked");
+                    clickable.OnClick();
+                }
+                else
+                {
+                    Debug.Log("IM: Non-clickable canvas UI clicked");
+                }
+            }
             return;
         }
 

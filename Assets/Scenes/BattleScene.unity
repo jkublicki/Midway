@@ -421,7 +421,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11c9393dd689829409ccb43344b7ba73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scene: {fileID: 772092751}
 --- !u!4 &108028913
 Transform:
   m_ObjectHideFlags: 0
@@ -728,11 +727,11 @@ RectTransform:
   - {fileID: 1482747839}
   m_Father: {fileID: 1835027279}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 10, y: 10}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 10, y: -10}
   m_SizeDelta: {x: 220, y: 40}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &435050818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1698,7 +1697,7 @@ GameObject:
   - component: {fileID: 849498046}
   - component: {fileID: 849498045}
   m_Layer: 5
-  m_Name: Title
+  m_Name: LogText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1720,8 +1719,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: -10}
-  m_SizeDelta: {x: 400, y: 40}
+  m_AnchoredPosition: {x: 10, y: -60}
+  m_SizeDelta: {x: 440, y: 240}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &849498045
 MonoBehaviour:
@@ -1778,7 +1777,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -2467,6 +2466,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Scene: {fileID: 772092751}
   DebugTurnButton: {fileID: 435050818}
+  LogText: {fileID: 849498045}
 --- !u!4 &1191213411
 Transform:
   m_ObjectHideFlags: 0
@@ -2654,9 +2654,10 @@ GameObject:
   - component: {fileID: 1386211522}
   - component: {fileID: 1386211521}
   - component: {fileID: 1386211520}
+  - component: {fileID: 1386211523}
   m_Layer: 5
   m_Name: CancelButton
-  m_TagString: Untagged
+  m_TagString: UiCanvasCancelAttackButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2763,6 +2764,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1386211518}
   m_CullTransparentMesh: 1
+--- !u!114 &1386211523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1386211518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c5094891327cbc4bbc8b5a768810dbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1456865187
 GameObject:
   m_ObjectHideFlags: 0
@@ -3239,7 +3252,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -5, y: -5}
-  m_SizeDelta: {x: 460, y: 160}
+  m_SizeDelta: {x: 460, y: 310}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1835027280
 MonoBehaviour:
@@ -3254,7 +3267,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.6666667}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.6666667}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4132,6 +4145,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 949075772}
     m_Modifications:
+    - target: {fileID: 2323081754687563568, guid: a3c2e886075235d44b53bbde8b50cd0e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.32
+      objectReference: {fileID: 0}
     - target: {fileID: 8605538585601638816, guid: a3c2e886075235d44b53bbde8b50cd0e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4319,6 +4336,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 949075772}
     m_Modifications:
+    - target: {fileID: 1677491420848683624, guid: 0a3d4355e663df04a9268f2380e15ef8, type: 3}
+      propertyPath: m_TagString
+      value: UiCoOvArrowForward
+      objectReference: {fileID: 0}
     - target: {fileID: 3835235486448523052, guid: 0a3d4355e663df04a9268f2380e15ef8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -4366,6 +4387,10 @@ PrefabInstance:
     - target: {fileID: 4484728384427516164, guid: 0a3d4355e663df04a9268f2380e15ef8, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7376549882762249324, guid: 0a3d4355e663df04a9268f2380e15ef8, type: 3}
+      propertyPath: m_TagString
+      value: UiCoOvArrowRight
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4526,6 +4551,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 949075772}
     m_Modifications:
+    - target: {fileID: 4097896507344931891, guid: 8aa5e625aa80be249b8a2167dbfe9f47, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.32
+      objectReference: {fileID: 0}
     - target: {fileID: 5787503067728123431, guid: 8aa5e625aa80be249b8a2167dbfe9f47, type: 3}
       propertyPath: m_Name
       value: CombatRightArrow
@@ -4594,6 +4623,10 @@ PrefabInstance:
     - target: {fileID: 7613716861520962195, guid: bdd9fd4bf7caa304c82e7e7a9729311a, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7613716861520962195, guid: bdd9fd4bf7caa304c82e7e7a9729311a, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 7939757756027092599, guid: bdd9fd4bf7caa304c82e7e7a9729311a, type: 3}
       propertyPath: m_LocalPosition.x

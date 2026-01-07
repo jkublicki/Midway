@@ -236,11 +236,24 @@ public class Orchestrator : MonoBehaviour
         }
     }
 
+
+    public void ServiceUiButtonClick(string tag)
+    {
+        Debug.Log("O: Cancel attack button");
+    }
+
+
+    public void ServiceCombatFinish()
+    {
+
+    }
+
+
     private void ServiceActionShowOverlay(UnitManager.Unit unitAtHex)
     {
         List<UnitManager.Unit> enemies = scene.Unit.UnitList.Where(u => u.Player != scene.SceneState.ActivePlayer).ToList();
 
-        List<HexCoords> hexesInAttackRange = UnitStatsData.InteractionArea(unitAtHex.HexCoords, unitAtHex.Direction, unitAtHex.UnitType, UnitStatsData.InteractionAreaTypeE.ATTACK);
+        List<HexCoords> hexesInAttackRange = UnitStatsData.InteractionArea(unitAtHex.HexCoords, unitAtHex.Direction, unitAtHex.UnitType, UnitStatsData.InteractionAreaTypeE.ATTACK_RANGE);
 
         List<HexCoords> targets = new List<HexCoords>();
 
@@ -280,7 +293,7 @@ public class Orchestrator : MonoBehaviour
         scene.Unit.MoveRight(unit);
     }
 
-    private void ServiceActionShowCombatMenu(UnitManager.Unit attackedUnit, UnitManager.Unit activeUnit)
+    private void ServiceActionInitializeCombat(UnitManager.Unit attackedUnit, UnitManager.Unit activeUnit)
     {
         //chyba do zastapienia powiadomieniem do combat managera i niech on ogarnia wyswietlanie interfejsow
         //i to powinno byc nie show combat menu, tylko initalize combat - obudzenie managera walki
@@ -327,6 +340,17 @@ public class Orchestrator : MonoBehaviour
         scene.Unit.DestroyUnit(unit);
     }
 
+    private void Reset()
+    {
+        //te dane sa do wyczyszczenia po zakonczeniu ostatniej akcji, bo byly zwiazane wylacznie z obsluga tego jednego inputu gracza
+        //z rozwazan o przypadkach: ukrycie overlay nie dezaktywuje jednostki
+        if (actionQueue.Count == 0)
+        {
+            activeUnit = null;
+            attackedUnit = null;
+        }
+    }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -362,8 +386,8 @@ public class Orchestrator : MonoBehaviour
                 case RuleEngine.ResultingActionE.SHOW_MOVE_OVERLAY:
                     ServiceActionShowMoveOverlay(activeUnit);
                     break;
-                case RuleEngine.ResultingActionE.SHOW_COMBAT_MENU:
-                    ServiceActionShowCombatMenu(attackedUnit, activeUnit);
+                case RuleEngine.ResultingActionE.INITIALIZE_COMBAT:
+                    ServiceActionInitializeCombat(attackedUnit, activeUnit);
                     break;
                 case ResultingActionE.SWAP_UNITS_LEFT:
                     ServiceActionSwapUnitsLeft(activeUnit);
@@ -382,13 +406,10 @@ public class Orchestrator : MonoBehaviour
                     break;
             }
 
-            //te dane sa do wyczyszczenia po zakonczeniu ostatniej akcji, bo byly zwiazane wylacznie z obsluga tego jednego inputu gracza
-            //z rozwazan o przypadkach: ukrycie overlay nie dezaktywuje jednostki
-            if (actionQueue.Count == 0)
-            {
-                activeUnit = null;
-                attackedUnit = null;
-            }
+            //stan orkiestratora ma zostac wyczyszczony po zakonczeniu przetwarzania jednego inputu / zdarzenia
+            Reset();
+
+
         }
     }
 }

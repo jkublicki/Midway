@@ -1,27 +1,31 @@
-todo:
+testy combat managera
+	- jest smród/problem - powielanie logiki silnika reguł
+		
 
-# konkretne dalsze kroki
-opcjonalnie do silnika reguł dodać INITIALIZE_COMBAT w miejsce SHOW_COMBAT_MENU
-koniecznie do silnika reguł dodać CANCEL_COMBAT i w reakcji na to niech zwróci SHOW_OVERLAY
-koniecznie do silnika reguł dodać FINISH_COMBAT i w reakcji na to... nic póki co
-do tego w orkiestratorze bedzie potrzebne service ui click - obsługa kliknięcia przycisku cancel na panelu walki - anulowanie walki
-ten przycisk cancel musi byc oznaczony tagiem czy cos
-strzal do orkiestrtora z finish attack bedzie wyjatkowy, bo to zdarzenie, a nie input - ale niech tak bedzie
+pomyslec nad combat overlay zaatakowanego - chyba combat overlay powinien byc instancjonowany dla a. atakujacego; b. obroncy - nieco inny
+	to powinno zgrabnie laczyc potrzeby hotseat i online 
 
-dopiero potem kontynuowa prace nad combat managerem
+pomyslec nad uporzadkowaniem combat managera
 
 
+co dalej 
 
-# ogólnikowo
-//prefaby do combat overlay
-//spawnowanie, dwie instancje/referencje, ukrywanie
-na panelu pasek czasu
-skrypt combat manager
-stany
-skrypt computer enemy
+- prezentacja stref?
+- karty?
 
 
 
+
+
+
+
+
+
+
+# feedback
+
+samoloty maja byc klikalne
+odwrócic kierunki strzalek do przesuwania mapy
 
 
 

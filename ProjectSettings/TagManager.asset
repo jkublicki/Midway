@@ -8,6 +8,10 @@ TagManager:
   - UiOverlayLeftArrow
   - UiOverlayForwardArrow
   - UiOverlayRightArrow
+  - UiCoOvArrowLeft
+  - UiCoOvArrows
+  - UiCoOvArrowForward
+  - UiCoOvArrowRight
   layers:
   - Default
   - TransparentFX

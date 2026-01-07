@@ -79,7 +79,7 @@ public class UnitManager : MonoBehaviour
 
     private void SetInitialPositions() //tempshit?
     {
-        unitList.Add(new Unit(new HexCoords(-3, 3), UnitType.US_FIGHTER, HexTools.HexDirectionPT.EAST, "usf1", SceneState.PlayerE.PLAYER_1));
+        unitList.Add(new Unit(new HexCoords(-2, 2), UnitType.US_FIGHTER, HexTools.HexDirectionPT.EAST, "usf1", SceneState.PlayerE.PLAYER_1));
         unitList.Add(new Unit(new HexCoords(-2, 3), UnitType.US_FIGHTER, HexTools.HexDirectionPT.NORTH_WEST, "usf2", SceneState.PlayerE.PLAYER_1));
         unitList.Add(new Unit(new HexCoords(3, -1), UnitType.US_FIGHTER, HexTools.HexDirectionPT.SOUTH_WEST, "usf3", SceneState.PlayerE.PLAYER_1));
 
@@ -210,8 +210,6 @@ public class UnitManager : MonoBehaviour
             //zmiana kierunku / yaw
             obj.transform.rotation = Quaternion.Euler(new Vector3(rot0.x - direction * maxRoll * rollCurveValue, rot0.y - direction * 60.0f * yawCurveValue, rot0.z));
 
-            
-          
 
             yield return null;
         }
@@ -225,7 +223,7 @@ public class UnitManager : MonoBehaviour
 
     }
 
-    public void MoveForward(Unit unit)
+    public Coroutine MoveForward(Unit unit)
     {
         //ustaliæ docelowy hex
         HexCoords targetHex = HexTools.Neighbor(unit.HexCoords, unit.Direction);
@@ -235,16 +233,18 @@ public class UnitManager : MonoBehaviour
 
 
         scene.SceneState.UnitMovementInProgress = true;
-        StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexTools.HexDirectionChangeE.NA, false, () =>
+        Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexTools.HexDirectionChangeE.NA, false, () =>
         {
             scene.SceneState.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
             unit.HexCoords = targetHex;
         }        
         ));
+
+        return coroutine;
     }
 
-    public void MoveLeft(Unit unit)
+    public Coroutine MoveLeft(Unit unit)
     {
         //ustaliæ docelowy hex
         HexCoords targetHex = HexTools.Neighbor(unit.HexCoords, unit.Direction);
@@ -254,7 +254,7 @@ public class UnitManager : MonoBehaviour
 
 
         scene.SceneState.UnitMovementInProgress = true;
-        StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexTools.HexDirectionChangeE.TO_LEFT, false, () =>
+        Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexTools.HexDirectionChangeE.TO_LEFT, false, () =>
         {
             scene.SceneState.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
@@ -263,9 +263,11 @@ public class UnitManager : MonoBehaviour
             unit.Direction = HexTools.AdjacentDirection(unit.Direction, HexTools.HexDirectionChangeE.TO_LEFT);
         }
         ));
+
+        return coroutine;
     }
 
-    public void MoveRight(Unit unit)
+    public Coroutine MoveRight(Unit unit)
     {
         //ustaliæ docelowy hex
         HexCoords targetHex = HexTools.Neighbor(unit.HexCoords, unit.Direction);
@@ -275,7 +277,7 @@ public class UnitManager : MonoBehaviour
 
 
         scene.SceneState.UnitMovementInProgress = true;
-        StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexTools.HexDirectionChangeE.TO_RIGHT, false, () =>
+        Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexTools.HexDirectionChangeE.TO_RIGHT, false, () =>
         {
             scene.SceneState.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
@@ -284,6 +286,8 @@ public class UnitManager : MonoBehaviour
             unit.Direction = HexTools.AdjacentDirection(unit.Direction, HexTools.HexDirectionChangeE.TO_RIGHT);
         }
         ));
+
+        return coroutine;
     }
 
 
