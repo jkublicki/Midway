@@ -11,7 +11,7 @@ public class Orchestrator : MonoBehaviour
 
     private SceneManagerReferences scene;
 
-    private Queue<RuleEngine.ResultingActionE> actionQueue = new Queue<RuleEngine.ResultingActionE>();
+    private Queue<ResultingAction> actionQueue = new Queue<ResultingAction>();
 
     //informacje wykonawicze o instancjach, zbêdne w silniku, potrzebne przy akcjach - zwi¹zane z jednym, aktualnie przetwarzanym inputem gracza i czyszczone po zakoñczeniu przetwarzania tego inputu
     private UnitManager.Unit activeUnit = null;
@@ -24,40 +24,40 @@ public class Orchestrator : MonoBehaviour
 
         //Debug.Log($"O: clicked: {tag}, hex: {(hex.HasValue ? $"({hex.Value.q},{hex.Value.r})" : "none")}"); //value wynika z tego, ¿e hex ma typ Nullable<HexCoords> 
 
-        RuleEngine.InputTargetE inputTarget; 
-        RuleEngine.InputHexContentE inputHexContent = RuleEngine.InputHexContentE.NA; //nieistotne przy input target = overlay
-        RuleEngine.TargetHexE targetHex; 
-        RuleEngine.HasActiveUnitE hasActiveUnit = RuleEngine.HasActiveUnitE.NA; //niech bêdzie NA, bo nieistotne - tak zaimplementowane w regulach; oczywicie ma, inaczej nie bylo by klikniecia w overlay
-        RuleEngine.CanMoveFurtherE canMoveFurther; //do ustalenia: pozycja overlay, jednostka tamze
-        RuleEngine.MovedThisTurnE movedThisTurn = RuleEngine.MovedThisTurnE.NA; //nieistotne - jesli strzalka, no to wlasnie sie rusza i traci atak; jesli atak, to wiadomo ze sie nie ruszal
+        InputTarget inputTarget; 
+        InputHexContent inputHexContent = InputHexContent.NA; //nieistotne przy input target = overlay
+        TargetHex targetHex; 
+        HasActiveUnit hasActiveUnit = HasActiveUnit.NA; //niech bêdzie NA, bo nieistotne - tak zaimplementowane w regulach; oczywicie ma, inaczej nie bylo by klikniecia w overlay
+        CanMoveFurther canMoveFurther; //do ustalenia: pozycja overlay, jednostka tamze
+        MovedThisTurn movedThisTurn = MovedThisTurn.NA; //nieistotne - jesli strzalka, no to wlasnie sie rusza i traci atak; jesli atak, to wiadomo ze sie nie ruszal
 
         switch (tag)
         {
             case "UiOverlayLeftArrow":
-                inputTarget = RuleEngine.InputTargetE.ARROW_LEFT;
+                inputTarget = InputTarget.ArrowLeft;
                 break;
             case "UiOverlayRightArrow":
-                inputTarget = RuleEngine.InputTargetE.ARROW_RIGHT;
+                inputTarget = InputTarget.ArrowRight;
                 break;
             case "UiOverlayForwardArrow":
-                inputTarget = RuleEngine.InputTargetE.ARROW_FORWARD;
+                inputTarget = InputTarget.ArrowForward;
                 break;
             case "UiOverlayAttackButton":
-                inputTarget = RuleEngine.InputTargetE.ATTACK;
+                inputTarget = InputTarget.Attack;
                 break;
             default:
                 Debug.Log("Pusty lub nieprawidlowy tag");
                 throw new ArgumentOutOfRangeException(nameof(tag), tag, "Nieobs³ugiwany tag");
         }
 
-        if (inputTarget == RuleEngine.InputTargetE.ATTACK)
+        if (inputTarget == InputTarget.Attack)
         {
             attackedUnit = scene.Unit.UnitList.FirstOrDefault(a => a.HexCoords.Equals(hex));
         }
 
         HexCoords targetHexCoords;
 
-        if (inputTarget is RuleEngine.InputTargetE.ARROW_LEFT or RuleEngine.InputTargetE.ARROW_FORWARD or RuleEngine.InputTargetE.ARROW_RIGHT) //odpowiednik IN z SQL
+        if (inputTarget is InputTarget.ArrowLeft or InputTarget.ArrowForward or InputTarget.ArrowRight) //odpowiednik IN z SQL
         {
             targetHexCoords = HexTools.Neighbor(scene.Overlay.ActiveHex, scene.Overlay.ActiveDirection);
         }
@@ -72,15 +72,15 @@ public class Orchestrator : MonoBehaviour
 
         if (!scene.Terrain.TerrainHexCoordsList.Contains(targetHexCoords))
         {
-            targetHex = RuleEngine.TargetHexE.OFF_MAP;
+            targetHex = TargetHex.OffMap;
         }
         else if (scene.Unit.UnitList.Any(u => u.HexCoords.Equals(targetHexCoords)))
         {
-            targetHex = RuleEngine.TargetHexE.OCCUPIED;
+            targetHex = TargetHex.Occupied;
         }
         else
         {
-            targetHex = RuleEngine.TargetHexE.EMPTY;
+            targetHex = TargetHex.Empty;
         }
 
         activeUnit = scene.Unit.UnitList.FirstOrDefault(u => u.HexCoords.Equals(scene.Overlay.ActiveHex));
@@ -88,11 +88,11 @@ public class Orchestrator : MonoBehaviour
         
         if (activeUnit.MovesThisTurn + 1 == maxMoves)
         {
-            canMoveFurther = RuleEngine.CanMoveFurtherE.FALSE;
+            canMoveFurther = CanMoveFurther.FALSE;
         }
         else
         {
-            canMoveFurther = RuleEngine.CanMoveFurtherE.TRUE;
+            canMoveFurther = CanMoveFurther.TRUE;
         }
 
 
@@ -101,7 +101,7 @@ public class Orchestrator : MonoBehaviour
 
         Debug.Log(condition.ToString());
 
-        List<RuleEngine.ResultingActionE> actions = RuleEngine.PerformEvaluation(condition);
+        List<ResultingAction> actions = RuleEngine.PerformEvaluation(condition);
 
         string s = "Akcje: ";
         foreach (var a in actions)
@@ -127,90 +127,90 @@ public class Orchestrator : MonoBehaviour
     {
         //Debug.Log("O: input plane clicked");
 
-        RuleEngine.InputTargetE inputTarget;
-        RuleEngine.InputHexContentE inputHexContent = RuleEngine.InputHexContentE.NA; //smieciowa wartosc do nadpisania, bo kompilator sie martwi
-        RuleEngine.TargetHexE targetHex;
-        RuleEngine.HasActiveUnitE hasActiveUnit;
-        RuleEngine.CanMoveFurtherE canMoveFurther;
-        RuleEngine.MovedThisTurnE movedThisTurn = RuleEngine.MovedThisTurnE.NA; //smieciowa wartosc do nadpisania, bo kompilator sie martwi
+        InputTarget inputTarget;
+        InputHexContent inputHexContent = InputHexContent.NA; //smieciowa wartosc do nadpisania, bo kompilator sie martwi
+        TargetHex targetHex;
+        HasActiveUnit hasActiveUnit;
+        CanMoveFurther canMoveFurther;
+        MovedThisTurn movedThisTurn = MovedThisTurn.NA; //smieciowa wartosc do nadpisania, bo kompilator sie martwi
 
 
         //klik pochodzi z input plane tak naprawde, sprawdzic czy tam jest hex
         if (scene.Terrain.TerrainHexCoordsList.Contains(hexClicked))
         {
-            inputTarget = RuleEngine.InputTargetE.HEX;
+            inputTarget = InputTarget.Hex;
         }
         else
         {
-            inputTarget = RuleEngine.InputTargetE.OFF_MAP;
+            inputTarget = InputTarget.OffMap;
         }
 
         //zawartosc kliknietego hexa
         //bez znaczenie przy off map
-        if (inputTarget == RuleEngine.InputTargetE.OFF_MAP)
+        if (inputTarget == InputTarget.OffMap)
         {
-            inputHexContent = RuleEngine.InputHexContentE.NA;
+            inputHexContent = InputHexContent.NA;
         }
         //je¿eli hex
-        else if (inputTarget == RuleEngine.InputTargetE.HEX)
+        else if (inputTarget == InputTarget.Hex)
         {
             UnitManager.Unit unitAtHex = scene.Unit.UnitList.FirstOrDefault(u => u.HexCoords.Equals(hexClicked));
 
             //pusty hex
             if (unitAtHex == null)
             {
-                inputHexContent = RuleEngine.InputHexContentE.EMPTY;
+                inputHexContent = InputHexContent.Empty;
             }
             //wlasny samolot
             else if (unitAtHex.Player == scene.SceneState.ActivePlayer)
             {
-                Debug.Log("O: klikniety wlasny samolot");
+                //Debug.Log("O: klikniety wlasny samolot");
                 
                 if (!unitAtHex.AttackedThisTurn && unitAtHex.MovesThisTurn < UnitStatsData.GetStats(unitAtHex.UnitType).MaxMoves)
                 {
-                    inputHexContent = RuleEngine.InputHexContentE.OWN_READY;
+                    inputHexContent = InputHexContent.OwnReady;
                     activeUnit = unitAtHex;
 
                     //czy juz sie ruszal w tej turze
                     //istotne tylko przy wlasnym samolocie zdolnym do ruchu/ataku
                     if (unitAtHex.MovesThisTurn > 0)
                     {
-                        movedThisTurn = RuleEngine.MovedThisTurnE.TRUE;
+                        movedThisTurn = MovedThisTurn.TRUE;
                     }
                     else
                     {
-                        movedThisTurn = RuleEngine.MovedThisTurnE.FALSE;
+                        movedThisTurn = MovedThisTurn.FALSE;
                     }
                 }
                 else
                 {
-                    inputHexContent = RuleEngine.InputHexContentE.OWN_USED;
+                    inputHexContent = InputHexContent.OwnUsed;
                 }
             }
             //obcy samolot
             else
             {
-                Debug.Log("O: klikniety wrogi samolot");
-                inputHexContent = RuleEngine.InputHexContentE.ENEMY;
+                //Debug.Log("O: klikniety wrogi samolot");
+                inputHexContent = InputHexContent.Enemy;
             }
 
         }
 
         //docelowy hex tu nie ma znaczenia, ma znaczenie przy strzalkach
-        targetHex = RuleEngine.TargetHexE.NA;
+        targetHex = TargetHex.NA;
 
         //informcja czy byl aktywny samolot / czy widac bylo strzalki ruchu lub ruchu i ataku / czy poprzednio zaznaczony hex zawieral wlasny samolot zdolny do ruchu/ataku
         if (scene.Overlay.IsOverlayVisible)
         {
-            hasActiveUnit = RuleEngine.HasActiveUnitE.TRUE;
+            hasActiveUnit = HasActiveUnit.TRUE;
         }
         else
         {
-            hasActiveUnit = RuleEngine.HasActiveUnitE.FALSE;
+            hasActiveUnit = HasActiveUnit.FALSE;
         }
 
         //nieistotne po kliknieciu hexa
-        canMoveFurther = RuleEngine.CanMoveFurtherE.NA;
+        canMoveFurther = CanMoveFurther.NA;
 
 
 
@@ -219,7 +219,7 @@ public class Orchestrator : MonoBehaviour
 
         Debug.Log(condition.ToString());
 
-        List<RuleEngine.ResultingActionE> actions = RuleEngine.PerformEvaluation(condition);
+        List<ResultingAction> actions = RuleEngine.PerformEvaluation(condition);
 
         string s = "Akcje: ";
         foreach (var a in actions)
@@ -239,7 +239,7 @@ public class Orchestrator : MonoBehaviour
 
     public void ServiceUiButtonClick(string tag)
     {
-        Debug.Log("O: Cancel attack button");
+        //Debug.Log("O: Cancel attack button");
     }
 
 
@@ -253,7 +253,7 @@ public class Orchestrator : MonoBehaviour
     {
         List<UnitManager.Unit> enemies = scene.Unit.UnitList.Where(u => u.Player != scene.SceneState.ActivePlayer).ToList();
 
-        List<HexCoords> hexesInAttackRange = UnitStatsData.InteractionArea(unitAtHex.HexCoords, unitAtHex.Direction, unitAtHex.UnitType, UnitStatsData.InteractionAreaTypeE.ATTACK_RANGE);
+        List<HexCoords> hexesInAttackRange = UnitStatsData.InteractionArea(unitAtHex.HexCoords, unitAtHex.Direction, unitAtHex.UnitType, InteractionAreaType.AttackRange);
 
         List<HexCoords> targets = new List<HexCoords>();
 
@@ -363,42 +363,42 @@ public class Orchestrator : MonoBehaviour
     {
         if (!scene.SceneState.UnitMovementInProgress && actionQueue.Count > 0)
         {
-            RuleEngine.ResultingActionE currentAction = actionQueue.Dequeue();
+            ResultingAction currentAction = actionQueue.Dequeue();
 
             //wykonujê to w update, aby unikn¹æ zagniezdzonych korutyn
             switch (currentAction)
             {
-                case RuleEngine.ResultingActionE.HIDE_OVERLAY:
+                case ResultingAction.HideOverlay:
                     ServiceActionHideOverlay();
                     break;
-                case RuleEngine.ResultingActionE.MOVE_UNIT_LEFT:
+                case ResultingAction.MoveUnitLeft:
                     ServiceActionMoveUnitLeft(activeUnit);
                     break;
-                case RuleEngine.ResultingActionE.MOVE_UNIT_FORWARD:
+                case ResultingAction.MoveUnitForward:
                     ServiceActionMoveUnitForward(activeUnit);
                     break;
-                case RuleEngine.ResultingActionE.MOVE_UNIT_RIGHT:
+                case ResultingAction.MoveUnitRight:
                     ServiceActionMoveUnitRight(activeUnit);
                     break;
-                case RuleEngine.ResultingActionE.SHOW_OVERLAY:
+                case ResultingAction.ShowOverlay:
                     ServiceActionShowOverlay(activeUnit);
                     break;
-                case RuleEngine.ResultingActionE.SHOW_MOVE_OVERLAY:
+                case ResultingAction.ShowMoveOverlay:
                     ServiceActionShowMoveOverlay(activeUnit);
                     break;
-                case RuleEngine.ResultingActionE.INITIALIZE_COMBAT:
+                case ResultingAction.InitializeCombat:
                     ServiceActionInitializeCombat(attackedUnit, activeUnit);
                     break;
-                case ResultingActionE.SWAP_UNITS_LEFT:
+                case ResultingAction.SwapUnitsLeft:
                     ServiceActionSwapUnitsLeft(activeUnit);
                     break;
-                case ResultingActionE.SWAP_UNITS_FORWARD:
+                case ResultingAction.SwapUnitsForward:
                     ServiceActionSwapUnitsForward(activeUnit);
                     break;
-                case ResultingActionE.SWAP_UNITS_RIGHT:
+                case ResultingAction.SwapUnitsRight:
                     ServiceActionSwapUnitsRight(activeUnit);
                     break;
-                case ResultingActionE.DESTROY_UNIT:
+                case ResultingAction.DestroyUnit:
                     ServiceActionDestroyUnit(activeUnit);
                     break;
 

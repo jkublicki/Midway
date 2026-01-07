@@ -11,9 +11,9 @@ public static class UnitStatsData
     {
         public int MaxMoves;
         public int MinMoves;
-        public Dictionary<InteractionAreaTypeE, List<HexCoords>> RelativeInteractionAreas;
+        public Dictionary<InteractionAreaType, List<HexCoords>> RelativeInteractionAreas;
 
-        public UnitStats(int maxMoves, int minMoves, Dictionary<InteractionAreaTypeE, List<HexCoords>> relativeInteractionAreas = null)
+        public UnitStats(int maxMoves, int minMoves, Dictionary<InteractionAreaType, List<HexCoords>> relativeInteractionAreas = null)
         {
             MaxMoves = maxMoves;
             MinMoves = minMoves;
@@ -23,40 +23,33 @@ public static class UnitStatsData
         
     }
 
-    private static readonly Dictionary<UnitManager.UnitType, UnitStats> stats = new Dictionary<UnitManager.UnitType, UnitStats>
+    private static readonly Dictionary<UnitType, UnitStats> stats = new Dictionary<UnitType, UnitStats>
     {
         //oczywiœcie mo¿na 4, 3 zamiast maxMoves: 4, ale tak czytleniej
-        { UnitType.US_FIGHTER, new UnitStats(maxMoves: 4, minMoves: 3, new Dictionary<InteractionAreaTypeE, List<HexCoords>> 
-            { { InteractionAreaTypeE.ATTACK_RANGE, HelperVectorSetAttack5() },
-              { InteractionAreaTypeE.FIRE_3, HelperVectorSet_US_F_OFFENSIVE_FIRE_ZONE_3_CARDS() },
-              { InteractionAreaTypeE.FIRE_2, HelperVectorSet_US_F_OFFENSIVE_FIRE_ZONE_2_CARDS() },
-              { InteractionAreaTypeE.DODGE_2, HelperVectorSet_US_F_DEFENSIVE_ZONE_2_CARDS() },
-              { InteractionAreaTypeE.DODGE_1, HelperVectorSet_US_F_DEFENSIVE_ZONE_1_CARDS() }
+        { UnitType.UsFighter, new UnitStats(maxMoves: 4, minMoves: 3, new Dictionary<InteractionAreaType, List<HexCoords>> 
+            { { InteractionAreaType.AttackRange, HelperVectorSetAttack5() },
+              { InteractionAreaType.FireThree, HelperVectorSet_US_F_OFFENSIVE_FIRE_ZONE_3_CARDS() },
+              { InteractionAreaType.FireTwo, HelperVectorSet_US_F_OFFENSIVE_FIRE_ZONE_2_CARDS() },
+              { InteractionAreaType.DodgeTwo, HelperVectorSet_US_F_DEFENSIVE_ZONE_2_CARDS() },
+              { InteractionAreaType.DodgeOne, HelperVectorSet_US_F_DEFENSIVE_ZONE_1_CARDS() }
             }) },
-        { UnitType.JP_FIGHTER, new UnitStats(maxMoves: 4, minMoves: 3, new Dictionary<InteractionAreaTypeE, List<HexCoords>>
-            { { InteractionAreaTypeE.ATTACK_RANGE, HelperVectorSetAttack5() },
-              { InteractionAreaTypeE.FIRE_3, HelperVectorSet_JP_F_OFFENSIVE_FIRE_ZONE_3_CARDS() },
-              { InteractionAreaTypeE.FIRE_2, HelperVectorSet_JP_F_OFFENSIVE_FIRE_ZONE_2_CARDS() },
-              { InteractionAreaTypeE.DODGE_2, HelperVectorSet_JP_F_DEFENSIVE_ZONE_2_CARDS() },
-              { InteractionAreaTypeE.DODGE_1, HelperVectorSet_JP_F_DEFENSIVE_ZONE_1_CARDS() }
+        { UnitType.JpFighter, new UnitStats(maxMoves: 4, minMoves: 3, new Dictionary<InteractionAreaType, List<HexCoords>>
+            { { InteractionAreaType.AttackRange, HelperVectorSetAttack5() },
+              { InteractionAreaType.FireThree, HelperVectorSet_JP_F_OFFENSIVE_FIRE_ZONE_3_CARDS() },
+              { InteractionAreaType.FireTwo, HelperVectorSet_JP_F_OFFENSIVE_FIRE_ZONE_2_CARDS() },
+              { InteractionAreaType.DodgeTwo, HelperVectorSet_JP_F_DEFENSIVE_ZONE_2_CARDS() },
+              { InteractionAreaType.DodgeOne, HelperVectorSet_JP_F_DEFENSIVE_ZONE_1_CARDS() }
             }) },        
-        { UnitType.US_BOMBER, new UnitStats(maxMoves: 3, minMoves: 2) },
-        { UnitType.JP_BOMBER, new UnitStats(maxMoves: 3, minMoves: 2) }
+        { UnitType.UsBomber, new UnitStats(maxMoves: 3, minMoves: 2) },
+        { UnitType.JpBomber, new UnitStats(maxMoves: 3, minMoves: 2) }
     };
 
-    public static UnitStats GetStats(UnitManager.UnitType unitType)
+    public static UnitStats GetStats(UnitType unitType)
     {
         return stats[unitType];
     }
 
-    public enum InteractionAreaTypeE
-    {
-        ATTACK_RANGE,
-        FIRE_3,
-        FIRE_2,
-        DODGE_2,
-        DODGE_1
-    }
+    
 
     private static List<HexCoords> HelperVectorSetAttack5()
     {
@@ -129,7 +122,7 @@ public static class UnitStatsData
 
 
 
-    public static List<HexCoords> InteractionArea(HexCoords unitHex, HexTools.HexDirectionPT unitDirection, UnitManager.UnitType unitType, InteractionAreaTypeE interactionAreaType)
+    public static List<HexCoords> InteractionArea(HexCoords unitHex, HexDirection unitDirection, UnitType unitType, InteractionAreaType interactionAreaType)
     {
         if (!stats[unitType].RelativeInteractionAreas.ContainsKey(interactionAreaType))
         {
@@ -143,7 +136,7 @@ public static class UnitStatsData
         //obracanie i przesuwanie
         foreach (HexCoords h in areaModel)
         {
-            HexCoords h1 = HexTools.RotateVector(h, HexTools.HexDirectionPT.NORTH_WEST, unitDirection);
+            HexCoords h1 = HexTools.RotateVector(h, HexDirection.NorthWest, unitDirection);
             HexCoords h2 = new HexCoords(h1.q + unitHex.q, h1.r + unitHex.r);
 
             adjustedAreaModel.Add(h2);

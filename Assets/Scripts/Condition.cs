@@ -2,16 +2,16 @@ using System;
 
 public struct Condition
 {
-    public RuleEngine.InputTargetE InputTarget;
-    public RuleEngine.InputHexContentE InputHexContent;
-    public RuleEngine.TargetHexE TargetHex;
-    public RuleEngine.HasActiveUnitE HasActiveUnit;
-    public RuleEngine.CanMoveFurtherE CanMoveFurther;
-    public RuleEngine.MovedThisTurnE MovedThisTurn;
+    public InputTarget InputTarget;
+    public InputHexContent InputHexContent;
+    public TargetHex TargetHex;
+    public HasActiveUnit HasActiveUnit;
+    public CanMoveFurther CanMoveFurther;
+    public MovedThisTurn MovedThisTurn;
 
-    public Condition(RuleEngine.InputTargetE inputTarget, RuleEngine.InputHexContentE inputHexContent,
-                     RuleEngine.TargetHexE targetHex, RuleEngine.HasActiveUnitE hasActiveUnit,
-                     RuleEngine.CanMoveFurtherE canMoveFurther, RuleEngine.MovedThisTurnE movedThisTurn)
+    public Condition(InputTarget inputTarget, InputHexContent inputHexContent,
+                     TargetHex targetHex, HasActiveUnit hasActiveUnit,
+                     CanMoveFurther canMoveFurther, MovedThisTurn movedThisTurn)
     {
         InputTarget = inputTarget;
         InputHexContent = inputHexContent;

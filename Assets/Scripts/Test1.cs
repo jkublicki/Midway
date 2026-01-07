@@ -36,14 +36,14 @@ public class Test1 : MonoBehaviour
 
 
 
-        //Debug.Log(HexTools.RotateVector(new HexCoords(-2, 2), HexTools.HexDirectionPT.WEST, HexTools.HexDirectionPT.NORTH_WEST).ToString());
+        //Debug.Log(HexTools.RotateVector(new HexCoords(-2, 2), HexDirection.West, HexDirection.NorthWest).ToString());
 
 
 
         //Debug.Log(HexTools.HexDistance(new HexCoords(-1, -2), new HexCoords(2, 1)).ToString());
 
 
-        //Scene.Overlay.DisplayOverlay(new HexCoords(1, -1), HexTools.HexDirectionPT.EAST, new List<HexCoords>() { new HexCoords(0,0), new HexCoords(-3, 3) });
+        //Scene.Overlay.DisplayOverlay(new HexCoords(1, -1), HexDirection.East, new List<HexCoords>() { new HexCoords(0,0), new HexCoords(-3, 3) });
     }
 
     bool didIt = false;
@@ -56,13 +56,13 @@ public class Test1 : MonoBehaviour
         if (!didIt)
         {
             didIt = true;
-            Scene.Highlight.AddOverlay(UnitStatsData.InteractionArea(new HexCoords(0, 0), HexTools.HexDirectionPT.NORTH_WEST, UnitManager.UnitType.JP_FIGHTER,
-                //UnitStatsData.InteractionAreaTypeE.US_F_OFFENSIVE_FIRE_ZONE_3_CARDS));
-                UnitStatsData.InteractionAreaTypeE.FIRE_3));
+            Scene.Highlight.AddOverlay(InteractionArea(new HexCoords(0, 0), HexDirection.NorthWest, UnitManager.UnitType.JpFighter,
+                //InteractionAreaType.US_F_OFFENSIVE_FIRE_ZONE_3_CARDS));
+                InteractionAreaType.FireThree));
         }
         */
 
-        
+
 
     }
 }

@@ -18,10 +18,10 @@ public class CombatManager : MonoBehaviour
     private UnitManager.Unit enemyUnitBackup;
     private CombatStateE state;
     private float stateEnterTime;
-    private HexTools.HexDirectionChangeE? attackerFirstMove;
-    private HexTools.HexDirectionChangeE? attackerSecondMove;
-    private HexTools.HexDirectionChangeE? defenderFirstMove;
-    private HexTools.HexDirectionChangeE? defenderSecondMove;
+    private HexDirectionChange? attackerFirstMove;
+    private HexDirectionChange? attackerSecondMove;
+    private HexDirectionChange? defenderFirstMove;
+    private HexDirectionChange? defenderSecondMove;
 
 
     private bool attackerCanDie = false;
@@ -33,10 +33,10 @@ public class CombatManager : MonoBehaviour
 
     private bool moveSequenceIsDone = false;
 
-    public HexTools.HexDirectionChangeE? AttackerFirstMove => attackerFirstMove;
-    public HexTools.HexDirectionChangeE? AttackerSecondMove => attackerSecondMove;
-    public HexTools.HexDirectionChangeE? DefenderFirstMove => defenderFirstMove;
-    public HexTools.HexDirectionChangeE? DefenderSecondMove => defenderSecondMove;
+    public HexDirectionChange? AttackerFirstMove => attackerFirstMove;
+    public HexDirectionChange? AttackerSecondMove => attackerSecondMove;
+    public HexDirectionChange? DefenderFirstMove => defenderFirstMove;
+    public HexDirectionChange? DefenderSecondMove => defenderSecondMove;
 
     public enum CombatStateE
     {
@@ -101,7 +101,7 @@ public class CombatManager : MonoBehaviour
 
 
 
-    public void SetMove(HexTools.HexDirectionChangeE direction, CombatRoleE combatRole)
+    public void SetMove(HexDirectionChange direction, CombatRoleE combatRole)
     {
         if (combatRole == CombatRoleE.ATTACKER)
         {
@@ -131,10 +131,10 @@ public class CombatManager : MonoBehaviour
 
     void TempshitTestSetEnemyMoves()
     {
-        static HexDirectionChangeE RandomDir()
+        static HexDirectionChange RandomDir()
         {
-            var values = Enum.GetValues(typeof(HexDirectionChangeE));
-            return (HexDirectionChangeE)values.GetValue(UnityEngine.Random.Range(0, values.Length));
+            var values = Enum.GetValues(typeof(HexDirectionChange));
+            return (HexDirectionChange)values.GetValue(UnityEngine.Random.Range(0, values.Length));
         }
 
         if (defenderFirstMove == null)
@@ -151,10 +151,10 @@ public class CombatManager : MonoBehaviour
     private void AutofillMoves()
     {
         //przeniesc do hextools?
-        static HexDirectionChangeE RandomDir()
+        static HexDirectionChange RandomDir()
         {
-            var values = Enum.GetValues(typeof(HexDirectionChangeE));
-            return (HexDirectionChangeE)values.GetValue(UnityEngine.Random.Range(0, values.Length));
+            var values = Enum.GetValues(typeof(HexDirectionChange));
+            return (HexDirectionChange)values.GetValue(UnityEngine.Random.Range(0, values.Length));
         }
 
         //kiedys jakie madrzejszy algorytm, teraz cokolwiek dla testow
@@ -193,11 +193,11 @@ public class CombatManager : MonoBehaviour
             scene.Unit.BeMoved(unitToSwap, ownUnit.HexCoords);
             unitToSwap = null;
         }
-        if (attackerFirstMove == HexTools.HexDirectionChangeE.NA)
+        if (attackerFirstMove == HexDirectionChange.NA)
         {
             yield return scene.Unit.MoveForward(ownUnit);
         }
-        else if (attackerFirstMove == HexTools.HexDirectionChangeE.TO_LEFT)
+        else if (attackerFirstMove == HexDirectionChange.ToLeft)
         {
             yield return scene.Unit.MoveLeft(ownUnit);
         }
@@ -214,11 +214,11 @@ public class CombatManager : MonoBehaviour
             scene.Unit.BeMoved(unitToSwap, enemyUnit.HexCoords);
             unitToSwap = null;
         }
-        if (defenderFirstMove == HexTools.HexDirectionChangeE.NA)
+        if (defenderFirstMove == HexDirectionChange.NA)
         {
             yield return scene.Unit.MoveForward(enemyUnit);
         }
-        else if (defenderFirstMove == HexTools.HexDirectionChangeE.TO_LEFT)
+        else if (defenderFirstMove == HexDirectionChange.ToLeft)
         {
             yield return scene.Unit.MoveLeft(enemyUnit);
         }
@@ -236,11 +236,11 @@ public class CombatManager : MonoBehaviour
             scene.Unit.BeMoved(unitToSwap, ownUnit.HexCoords);
             unitToSwap = null;
         }        
-        if (attackerSecondMove == HexTools.HexDirectionChangeE.NA)
+        if (attackerSecondMove == HexDirectionChange.NA)
         {
             yield return scene.Unit.MoveForward(ownUnit);
         }
-        else if (attackerSecondMove == HexTools.HexDirectionChangeE.TO_LEFT)
+        else if (attackerSecondMove == HexDirectionChange.ToLeft)
         {
             yield return scene.Unit.MoveLeft(ownUnit);
         }
@@ -257,11 +257,11 @@ public class CombatManager : MonoBehaviour
             scene.Unit.BeMoved(unitToSwap, enemyUnit.HexCoords);
             unitToSwap = null;
         }
-        if (defenderSecondMove == HexTools.HexDirectionChangeE.NA)
+        if (defenderSecondMove == HexDirectionChange.NA)
         {
             yield return scene.Unit.MoveForward(enemyUnit);
         }
-        else if (defenderSecondMove == HexTools.HexDirectionChangeE.TO_LEFT)
+        else if (defenderSecondMove == HexDirectionChange.ToLeft)
         {
             yield return scene.Unit.MoveLeft(enemyUnit);
         }
@@ -274,13 +274,13 @@ public class CombatManager : MonoBehaviour
         moveSequenceIsDone = true;
     }
 
-    UnitStatsData.InteractionAreaTypeE? InteractionZone(HexCoords unitHex, HexTools.HexDirectionPT unitDirection, UnitManager.UnitType unitType, HexCoords banditHex)
+    InteractionAreaType? InteractionZone(HexCoords unitHex, HexDirection unitDirection, UnitType unitType, HexCoords banditHex)
     {
-        UnitStatsData.InteractionAreaTypeE? result = null;
+        InteractionAreaType? result = null;
        
-        foreach (InteractionAreaTypeE areaType in Enum.GetValues(typeof(InteractionAreaTypeE)))
+        foreach (InteractionAreaType areaType in Enum.GetValues(typeof(InteractionAreaType)))
         {
-            List<HexCoords> areaHexes = UnitStatsData.InteractionArea(unitHex, unitDirection, unitType, areaType);
+            List<HexCoords> areaHexes = InteractionArea(unitHex, unitDirection, unitType, areaType);
             if (areaHexes.Contains(banditHex))
             {
                 result = areaType;
@@ -338,6 +338,8 @@ public class CombatManager : MonoBehaviour
         switch (state)
         {
             case CombatStateE.AWAITING_MOVES:
+
+                ownUnit.AttackedThisTurn = true;
                 //interfejsy
                 scene.CombatOverlay.ShowCombatOverlayPanel();
                 scene.CombatOverlay.DisplayArrows(ownUnit.HexCoords, ownUnit.Direction);
@@ -357,16 +359,19 @@ public class CombatManager : MonoBehaviour
                 StartCoroutine(MoveSequence());
                 break;
             case CombatStateE.DOGFIGHT:
-                //sprawdzic czy ktorys wylecial za mape
-                if (!scene.Terrain.TerrainHexCoordsList.Contains(ownUnit.HexCoords))
+                //sprawdzic czy ktorys (lub oba) wylecial za mape
+                if (!scene.Terrain.TerrainHexCoordsList.Contains(ownUnit.HexCoords) || !scene.Terrain.TerrainHexCoordsList.Contains(enemyUnit.HexCoords))
                 {
-                    scene.Unit.DestroyUnit(ownUnit);
-                    ChangeCombatState(CombatStateE.FINISHED);
-                    break;
-                }
-                if (!scene.Terrain.TerrainHexCoordsList.Contains(enemyUnit.HexCoords))
-                {
-                    scene.Unit.DestroyUnit(enemyUnit);
+                    if (!scene.Terrain.TerrainHexCoordsList.Contains(ownUnit.HexCoords))
+                    {
+                        scene.Unit.DestroyUnit(ownUnit);
+                        Debug.Log("Napastnik wylecia³ poza mapê i spad³ z braku paliwa.");
+                    }
+                    if (!scene.Terrain.TerrainHexCoordsList.Contains(enemyUnit.HexCoords))
+                    {
+                        scene.Unit.DestroyUnit(enemyUnit);
+                        Debug.Log("Zaatakowany wylecia³ poza mapê i spad³ z braku paliwa.");
+                    }
                     ChangeCombatState(CombatStateE.FINISHED);
                     break;
                 }
@@ -374,51 +379,52 @@ public class CombatManager : MonoBehaviour
                 //sprawdzic odleglosc, skonczyc jesli > 3
                 if (HexTools.HexDistance(ownUnit.HexCoords, enemyUnit.HexCoords) > 3)
                 {
+                    Debug.Log("Uczestnicy starcia oddalili siê od siebie.");
                     ChangeCombatState(CombatStateE.FINISHED);
                     break;
                 }
 
 
-                UnitStatsData.InteractionAreaTypeE? attackerInteraction = InteractionZone(ownUnit.HexCoords, ownUnit.Direction, ownUnit.UnitType, enemyUnit.HexCoords);
-                UnitStatsData.InteractionAreaTypeE? defenderInteraction = InteractionZone(enemyUnit.HexCoords, enemyUnit.Direction, enemyUnit.UnitType, ownUnit.HexCoords);
+                InteractionAreaType? attackerInteraction = InteractionZone(ownUnit.HexCoords, ownUnit.Direction, ownUnit.UnitType, enemyUnit.HexCoords);
+                InteractionAreaType? defenderInteraction = InteractionZone(enemyUnit.HexCoords, enemyUnit.Direction, enemyUnit.UnitType, ownUnit.HexCoords);
                 if (attackerInteraction == null || defenderInteraction == null)
                 {
                     throw new Exception("Nie znaleziono interakcji");
                 }
                 switch (attackerInteraction)
                 {
-                    case InteractionAreaTypeE.FIRE_3:
+                    case InteractionAreaType.FireThree:
                         defenderCanDie = true;
                         attackerDiceCount = 3;
                         break;
-                    case InteractionAreaTypeE.FIRE_2:
+                    case InteractionAreaType.FireTwo:
                         defenderCanDie = true;
                         attackerDiceCount = 2;
                         break;
-                    case InteractionAreaTypeE.DODGE_2:
+                    case InteractionAreaType.DodgeTwo:
                         defenderCanDie = false;
                         attackerDiceCount = 2;
                         break;
-                    case InteractionAreaTypeE.DODGE_1:
+                    case InteractionAreaType.DodgeOne:
                         defenderCanDie = false;
                         attackerDiceCount = 1;
                         break;
                 }
                 switch (defenderInteraction)
                 {
-                    case InteractionAreaTypeE.FIRE_3:
+                    case InteractionAreaType.FireThree:
                         attackerCanDie = true;
                         defenderDiceCount = 3;
                         break;
-                    case InteractionAreaTypeE.FIRE_2:
+                    case InteractionAreaType.FireTwo:
                         attackerCanDie = true;
                         defenderDiceCount = 2;
                         break;
-                    case InteractionAreaTypeE.DODGE_2:
+                    case InteractionAreaType.DodgeTwo:
                         attackerCanDie = false;
                         defenderDiceCount = 2;
                         break;
-                    case InteractionAreaTypeE.DODGE_1:
+                    case InteractionAreaType.DodgeOne:
                         attackerCanDie = false;
                         defenderDiceCount = 1;
                         break;
@@ -437,7 +443,7 @@ public class CombatManager : MonoBehaviour
                 }
 
 
-                Debug.Log("Dogfight! Interakcja napastnika: " + attackerInteraction + ", zaatakowanego: " + defenderInteraction + ". Kosci/karty napastnika: "
+                Debug.Log("Walka powietrzna; interakcja napastnika: " + attackerInteraction + ", zaatakowanego: " + defenderInteraction + ". Kosci/karty napastnika: "
                     + string.Join(", ", attackerDices) + ". Kosci/karty zaatakowanego: " + string.Join(", ", defenderDices) + ".");
 
                 if (attackerDices.Max() > defenderDices.Max() && defenderCanDie)

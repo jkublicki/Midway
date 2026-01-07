@@ -26,7 +26,7 @@ public class CombatOverlayManager : MonoBehaviour
 
     public bool IsCombatOverlayPanelVisible = false;
     public HexCoords OwnUnitOverlayHex;
-    public HexTools.HexDirectionPT OwnUnitOverlayDirection;
+    public HexDirection OwnUnitOverlayDirection;
     public HexCoords EnemyUnitOverlayHex;
 
     private GameObject ownHighlight;
@@ -37,12 +37,12 @@ public class CombatOverlayManager : MonoBehaviour
 
 
 
-    private void HelperServiceCombatOverlayClick(HexTools.HexDirectionChangeE turn)
+    private void HelperServiceCombatOverlayClick(HexDirectionChange turn)
     {
         //zmiana combat overlay
         //ustawiam na wypadek wyczyszczenie tego w hide
         HexCoords ownHex = OwnUnitOverlayHex;
-        HexTools.HexDirectionPT ownDirection = OwnUnitOverlayDirection;
+        HexDirection ownDirection = OwnUnitOverlayDirection;
         HideArrows();
 
         if (scene.CombatManager.AttackerSecondMove == null)
@@ -67,23 +67,23 @@ public class CombatOverlayManager : MonoBehaviour
 
     public void ServiceCombatOverlayClick(string tag)
     {
-        Debug.Log("COM: " + tag + " clicked");
+        //Debug.Log("COM: " + tag + " clicked");
 
         switch (tag)
         {
             case "UiCoOvArrowLeft":
                 //przekazanie decyzji uzytkownika
-                scene.CombatManager.SetMove(HexTools.HexDirectionChangeE.TO_LEFT, CombatManager.CombatRoleE.ATTACKER);
-                HelperServiceCombatOverlayClick(HexTools.HexDirectionChangeE.TO_LEFT);
+                scene.CombatManager.SetMove(HexDirectionChange.ToLeft, CombatManager.CombatRoleE.ATTACKER);
+                HelperServiceCombatOverlayClick(HexDirectionChange.ToLeft);
                 break;
             case "UiCoOvArrowForward":
                 //jw.
-                scene.CombatManager.SetMove(HexTools.HexDirectionChangeE.NA, CombatManager.CombatRoleE.ATTACKER);
-                HelperServiceCombatOverlayClick(HexTools.HexDirectionChangeE.NA);
+                scene.CombatManager.SetMove(HexDirectionChange.NA, CombatManager.CombatRoleE.ATTACKER);
+                HelperServiceCombatOverlayClick(HexDirectionChange.NA);
                 break;
             case "UiCoOvArrowRight":
-                scene.CombatManager.SetMove(HexTools.HexDirectionChangeE.TO_RIGHT, CombatManager.CombatRoleE.ATTACKER);
-                HelperServiceCombatOverlayClick(HexTools.HexDirectionChangeE.TO_RIGHT);
+                scene.CombatManager.SetMove(HexDirectionChange.ToRight, CombatManager.CombatRoleE.ATTACKER);
+                HelperServiceCombatOverlayClick(HexDirectionChange.ToRight);
                 break;
             default:
                 Debug.Log("Pusty lub nieprawidlowy tag");
@@ -107,7 +107,7 @@ public class CombatOverlayManager : MonoBehaviour
         IsCombatOverlayPanelVisible = false;
     }
 
-    public void DisplayArrows(HexCoords activeHex, HexTools.HexDirectionPT direction)
+    public void DisplayArrows(HexCoords activeHex, HexDirection direction)
     {
         float yRotation = HexTools.HexDirectionToRotation(direction);
         Quaternion rotation = Quaternion.Euler(arrowsPrefab.transform.eulerAngles.x, yRotation, arrowsPrefab.transform.eulerAngles.z);
@@ -121,19 +121,19 @@ public class CombatOverlayManager : MonoBehaviour
         OwnUnitOverlayDirection = direction;
     }
 
-    public GameObject DisplayArrow(HexCoords hex, HexTools.HexDirectionPT direction, HexTools.HexDirectionChangeE arrowType)
+    public GameObject DisplayArrow(HexCoords hex, HexDirection direction, HexDirectionChange arrowType)
     {
         GameObject prefab = null;
 
         switch (arrowType)
         {
-            case HexTools.HexDirectionChangeE.TO_LEFT:
+            case HexDirectionChange.ToLeft:
                 prefab = arrowLeftPrefab;
                 break;
-            case HexTools.HexDirectionChangeE.NA:
+            case HexDirectionChange.NA:
                 prefab = arrowForwardPrefab; 
                 break;
-            case HexTools.HexDirectionChangeE.TO_RIGHT:
+            case HexDirectionChange.ToRight:
                 prefab = arrowRightPrefab;
                 break;
         }
@@ -155,13 +155,13 @@ public class CombatOverlayManager : MonoBehaviour
         {
             Destroy(arrowFirstMove);
             arrowFirstMove = null;
-            Debug.Log(Time.time.ToString() + ": destroying arrow 1");
+            //Debug.Log(Time.time.ToString() + ": destroying arrow 1");
         }
         else if (firstOrSecond == 2 && arrowSecondMove != null)
         {
             Destroy(arrowSecondMove);
             arrowSecondMove = null;
-            Debug.Log(Time.time.ToString() + ": destroying arrow 2");
+            //Debug.Log(Time.time.ToString() + ": destroying arrow 2");
         }
     }
 

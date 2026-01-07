@@ -1,163 +1,92 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Windows;
-using static RuleEngine;
-
-//poprzedaæ go musi coœ co ustali ten input-context: dwojako: input i context
-//coœ w rodzaju silnika decyzyjnego: input-context -> action-set
-//tutaj zarówno wejscie jak i wyjscie jest mocno abstrakcyjne; utworzenie tej abstrakcji na wejsciu i obsluzenie na wyjsciu bedzie zlozone
-
-//implementator decyzji rule executora bedzie potrzebowac wiecej informacji niz w tych enumach, np. koordynaty, kierunek zakretu
-//zarazem powinien byc w stanie dzialac wylacznie w oparciu o output rule executora
-//wiec niech przez rule executora przeleci cos w rodzaju "extra data/details"
 
 
+
+//silnik decyzyjny
 public static class RuleEngine
 {
-    public enum InputTargetE
-    {
-        HEX,
-        ARROW_LEFT,
-        ARROW_FORWARD,
-        ARROW_RIGHT,
-        ATTACK,
-        OFF_MAP,
-        CANCEL_COMBAT,
-        FINISH_COMBAT //to wyj¹tkowo zdarzenie, a nie input
-    }
 
-    public enum InputHexContentE
-    {
-        NA,
-        EMPTY,
-        ENEMY,
-        OWN_READY,
-        OWN_USED
-    }
-
-    public enum TargetHexE
-    {
-        NA,
-        EMPTY,
-        OFF_MAP,
-        OCCUPIED
-    }
-
-    public enum HasActiveUnitE
-    {
-        NA,
-        TRUE,
-        FALSE
-    }
-
-    public enum CanMoveFurtherE
-    {
-        NA,
-        TRUE,
-        FALSE
-    }
-
-    public enum MovedThisTurnE
-    {
-        NA,
-        TRUE,
-        FALSE
-    }
-
-
-    public enum ResultingActionE
-    {
-        HIDE_OVERLAY,
-        SHOW_OVERLAY,
-        SHOW_MOVE_OVERLAY,
-        MOVE_UNIT_LEFT,
-        MOVE_UNIT_FORWARD,
-        MOVE_UNIT_RIGHT,
-        DESTROY_UNIT,
-        SWAP_UNITS_LEFT,
-        SWAP_UNITS_FORWARD,
-        SWAP_UNITS_RIGHT,
-        //SHOW_COMBAT_MENU
-        INITIALIZE_COMBAT
-    }
-
-    private static Dictionary<Condition, List<ResultingActionE>> rules = new Dictionary<Condition, List<ResultingActionE>>()
+    private static Dictionary<Condition, List<ResultingAction>> rules = new Dictionary<Condition, List<ResultingAction>>()
     {
         //wa¿ne: NA w silnik decyzyjnym oznacza "nieistotne" -> ka¿da wartoœæ bêdzie pasowaæ
 
-        { new Condition(InputTargetE.HEX, InputHexContentE.EMPTY, TargetHexE.NA, HasActiveUnitE.FALSE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { } },
-        { new Condition(InputTargetE.HEX, InputHexContentE.EMPTY, TargetHexE.NA, HasActiveUnitE.TRUE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY } },
-        { new Condition(InputTargetE.HEX, InputHexContentE.ENEMY, TargetHexE.NA, HasActiveUnitE.FALSE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { } },
-        { new Condition(InputTargetE.HEX, InputHexContentE.ENEMY, TargetHexE.NA, HasActiveUnitE.TRUE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY } },
-        { new Condition(InputTargetE.HEX, InputHexContentE.OWN_USED, TargetHexE.NA, HasActiveUnitE.FALSE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { } },
-        { new Condition(InputTargetE.HEX, InputHexContentE.OWN_USED, TargetHexE.NA, HasActiveUnitE.TRUE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY } },
-        { new Condition(InputTargetE.HEX, InputHexContentE.OWN_READY, TargetHexE.NA, HasActiveUnitE.FALSE, CanMoveFurtherE.NA, MovedThisTurnE.FALSE), new List<ResultingActionE>() { ResultingActionE.SHOW_OVERLAY } },
-        { new Condition(InputTargetE.HEX, InputHexContentE.OWN_READY, TargetHexE.NA, HasActiveUnitE.FALSE, CanMoveFurtherE.NA, MovedThisTurnE.TRUE), new List<ResultingActionE>() { ResultingActionE.SHOW_MOVE_OVERLAY } },
+        { new Condition(InputTarget.Hex, InputHexContent.Empty, TargetHex.NA, HasActiveUnit.FALSE, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { } },
+        { new Condition(InputTarget.Hex, InputHexContent.Empty, TargetHex.NA, HasActiveUnit.TRUE, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay } },
+        { new Condition(InputTarget.Hex, InputHexContent.Enemy, TargetHex.NA, HasActiveUnit.FALSE, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { } },
+        { new Condition(InputTarget.Hex, InputHexContent.Enemy, TargetHex.NA, HasActiveUnit.TRUE, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay } },
+        { new Condition(InputTarget.Hex, InputHexContent.OwnUsed, TargetHex.NA, HasActiveUnit.FALSE, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { } },
+        { new Condition(InputTarget.Hex, InputHexContent.OwnUsed, TargetHex.NA, HasActiveUnit.TRUE, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay } },
+        { new Condition(InputTarget.Hex, InputHexContent.OwnReady, TargetHex.NA, HasActiveUnit.FALSE, CanMoveFurther.NA, MovedThisTurn.FALSE), new List<ResultingAction>() { ResultingAction.ShowOverlay } },
+        { new Condition(InputTarget.Hex, InputHexContent.OwnReady, TargetHex.NA, HasActiveUnit.FALSE, CanMoveFurther.NA, MovedThisTurn.TRUE), new List<ResultingAction>() { ResultingAction.ShowMoveOverlay } },
 
 
 
-        { new Condition(InputTargetE.HEX, InputHexContentE.OWN_READY, TargetHexE.NA, HasActiveUnitE.TRUE, CanMoveFurtherE.NA, MovedThisTurnE.FALSE), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.SHOW_OVERLAY } },
-        { new Condition(InputTargetE.HEX, InputHexContentE.OWN_READY, TargetHexE.NA, HasActiveUnitE.TRUE, CanMoveFurtherE.NA, MovedThisTurnE.TRUE), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.SHOW_MOVE_OVERLAY } },
+        { new Condition(InputTarget.Hex, InputHexContent.OwnReady, TargetHex.NA, HasActiveUnit.TRUE, CanMoveFurther.NA, MovedThisTurn.FALSE), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.ShowOverlay } },
+        { new Condition(InputTarget.Hex, InputHexContent.OwnReady, TargetHex.NA, HasActiveUnit.TRUE, CanMoveFurther.NA, MovedThisTurn.TRUE), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.ShowMoveOverlay } },
 
 
-        { new Condition(InputTargetE.ARROW_LEFT, InputHexContentE.NA, TargetHexE.EMPTY, HasActiveUnitE.NA, CanMoveFurtherE.TRUE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.MOVE_UNIT_LEFT, ResultingActionE.SHOW_MOVE_OVERLAY } },
-        { new Condition(InputTargetE.ARROW_FORWARD, InputHexContentE.NA, TargetHexE.EMPTY, HasActiveUnitE.NA, CanMoveFurtherE.TRUE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.MOVE_UNIT_FORWARD, ResultingActionE.SHOW_MOVE_OVERLAY } },
-        { new Condition(InputTargetE.ARROW_RIGHT, InputHexContentE.NA, TargetHexE.EMPTY, HasActiveUnitE.NA, CanMoveFurtherE.TRUE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.MOVE_UNIT_RIGHT, ResultingActionE.SHOW_MOVE_OVERLAY } },
-
-
-
-        { new Condition(InputTargetE.ARROW_LEFT, InputHexContentE.NA, TargetHexE.EMPTY, HasActiveUnitE.NA, CanMoveFurtherE.FALSE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.MOVE_UNIT_LEFT} },
-        { new Condition(InputTargetE.ARROW_FORWARD, InputHexContentE.NA, TargetHexE.EMPTY, HasActiveUnitE.NA, CanMoveFurtherE.FALSE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.MOVE_UNIT_FORWARD} },
-        { new Condition(InputTargetE.ARROW_RIGHT, InputHexContentE.NA, TargetHexE.EMPTY, HasActiveUnitE.NA, CanMoveFurtherE.FALSE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.MOVE_UNIT_RIGHT} },
+        { new Condition(InputTarget.ArrowLeft, InputHexContent.NA, TargetHex.Empty, HasActiveUnit.NA, CanMoveFurther.TRUE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.MoveUnitLeft, ResultingAction.ShowMoveOverlay } },
+        { new Condition(InputTarget.ArrowForward, InputHexContent.NA, TargetHex.Empty, HasActiveUnit.NA, CanMoveFurther.TRUE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.MoveUnitForward, ResultingAction.ShowMoveOverlay } },
+        { new Condition(InputTarget.ArrowRight, InputHexContent.NA, TargetHex.Empty, HasActiveUnit.NA, CanMoveFurther.TRUE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.MoveUnitRight, ResultingAction.ShowMoveOverlay } },
 
 
 
-
-        { new Condition(InputTargetE.ARROW_LEFT, InputHexContentE.NA, TargetHexE.OFF_MAP, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.MOVE_UNIT_LEFT, ResultingActionE.DESTROY_UNIT } },
-        { new Condition(InputTargetE.ARROW_FORWARD, InputHexContentE.NA, TargetHexE.OFF_MAP, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.MOVE_UNIT_FORWARD, ResultingActionE.DESTROY_UNIT } },
-        { new Condition(InputTargetE.ARROW_RIGHT, InputHexContentE.NA, TargetHexE.OFF_MAP, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.MOVE_UNIT_RIGHT, ResultingActionE.DESTROY_UNIT } },
-
-
-
-        { new Condition(InputTargetE.ARROW_LEFT, InputHexContentE.NA, TargetHexE.OCCUPIED, HasActiveUnitE.NA, CanMoveFurtherE.TRUE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.SWAP_UNITS_LEFT, ResultingActionE.SHOW_MOVE_OVERLAY } },
-        { new Condition(InputTargetE.ARROW_FORWARD, InputHexContentE.NA, TargetHexE.OCCUPIED, HasActiveUnitE.NA, CanMoveFurtherE.TRUE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.SWAP_UNITS_FORWARD, ResultingActionE.SHOW_MOVE_OVERLAY } },
-        { new Condition(InputTargetE.ARROW_RIGHT, InputHexContentE.NA, TargetHexE.OCCUPIED, HasActiveUnitE.NA, CanMoveFurtherE.TRUE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.SWAP_UNITS_RIGHT, ResultingActionE.SHOW_MOVE_OVERLAY } },
-
-        { new Condition(InputTargetE.ARROW_LEFT, InputHexContentE.NA, TargetHexE.OCCUPIED, HasActiveUnitE.NA, CanMoveFurtherE.FALSE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.SWAP_UNITS_LEFT } },
-        { new Condition(InputTargetE.ARROW_FORWARD, InputHexContentE.NA, TargetHexE.OCCUPIED, HasActiveUnitE.NA, CanMoveFurtherE.FALSE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.SWAP_UNITS_FORWARD } },
-        { new Condition(InputTargetE.ARROW_RIGHT, InputHexContentE.NA, TargetHexE.OCCUPIED, HasActiveUnitE.NA, CanMoveFurtherE.FALSE, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.SWAP_UNITS_RIGHT } },
+        { new Condition(InputTarget.ArrowLeft, InputHexContent.NA, TargetHex.Empty, HasActiveUnit.NA, CanMoveFurther.FALSE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.MoveUnitLeft} },
+        { new Condition(InputTarget.ArrowForward, InputHexContent.NA, TargetHex.Empty, HasActiveUnit.NA, CanMoveFurther.FALSE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.MoveUnitForward} },
+        { new Condition(InputTarget.ArrowRight, InputHexContent.NA, TargetHex.Empty, HasActiveUnit.NA, CanMoveFurther.FALSE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.MoveUnitRight} },
 
 
 
 
-        { new Condition(InputTargetE.ATTACK, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY, ResultingActionE.INITIALIZE_COMBAT } },
+        { new Condition(InputTarget.ArrowLeft, InputHexContent.NA, TargetHex.OffMap, HasActiveUnit.NA, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.MoveUnitLeft, ResultingAction.DestroyUnit } },
+        { new Condition(InputTarget.ArrowForward, InputHexContent.NA, TargetHex.OffMap, HasActiveUnit.NA, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.MoveUnitForward, ResultingAction.DestroyUnit } },
+        { new Condition(InputTarget.ArrowRight, InputHexContent.NA, TargetHex.OffMap, HasActiveUnit.NA, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.MoveUnitRight, ResultingAction.DestroyUnit } },
 
-        { new Condition(InputTargetE.CANCEL_COMBAT, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.SHOW_OVERLAY } },
-        { new Condition(InputTargetE.FINISH_COMBAT, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.NA, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { } },
 
 
-        { new Condition(InputTargetE.OFF_MAP, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.FALSE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { } },
-        { new Condition(InputTargetE.OFF_MAP, InputHexContentE.NA, TargetHexE.NA, HasActiveUnitE.TRUE, CanMoveFurtherE.NA, MovedThisTurnE.NA), new List<ResultingActionE>() { ResultingActionE.HIDE_OVERLAY } }
+        { new Condition(InputTarget.ArrowLeft, InputHexContent.NA, TargetHex.Occupied, HasActiveUnit.NA, CanMoveFurther.TRUE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.SwapUnitsLeft, ResultingAction.ShowMoveOverlay } },
+        { new Condition(InputTarget.ArrowForward, InputHexContent.NA, TargetHex.Occupied, HasActiveUnit.NA, CanMoveFurther.TRUE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.SwapUnitsForward, ResultingAction.ShowMoveOverlay } },
+        { new Condition(InputTarget.ArrowRight, InputHexContent.NA, TargetHex.Occupied, HasActiveUnit.NA, CanMoveFurther.TRUE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.SwapUnitsRight, ResultingAction.ShowMoveOverlay } },
+
+        { new Condition(InputTarget.ArrowLeft, InputHexContent.NA, TargetHex.Occupied, HasActiveUnit.NA, CanMoveFurther.FALSE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.SwapUnitsLeft } },
+        { new Condition(InputTarget.ArrowForward, InputHexContent.NA, TargetHex.Occupied, HasActiveUnit.NA, CanMoveFurther.FALSE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.SwapUnitsForward } },
+        { new Condition(InputTarget.ArrowRight, InputHexContent.NA, TargetHex.Occupied, HasActiveUnit.NA, CanMoveFurther.FALSE, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.SwapUnitsRight } },
+
+
+
+
+        { new Condition(InputTarget.Attack, InputHexContent.NA, TargetHex.NA, HasActiveUnit.NA, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay, ResultingAction.InitializeCombat } },
+
+        //anulowanie byloby mylace dla drugiego gracza
+        //{ new Condition(InputTarget.CANCEL_COMBAT, InputHexContent.NA, TargetHex.NA, HasActiveUnit.NA, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.ShowOverlay } },
+        
+        
+        { new Condition(InputTarget.FinishCombat, InputHexContent.NA, TargetHex.NA, HasActiveUnit.NA, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { } },
+
+
+        { new Condition(InputTarget.OffMap, InputHexContent.NA, TargetHex.NA, HasActiveUnit.FALSE, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { } },
+        { new Condition(InputTarget.OffMap, InputHexContent.NA, TargetHex.NA, HasActiveUnit.TRUE, CanMoveFurther.NA, MovedThisTurn.NA), new List<ResultingAction>() { ResultingAction.HideOverlay } }
 
     };
 
-    private static List<KeyValuePair<Condition, List<ResultingActionE>>> rulesList;
+    private static List<KeyValuePair<Condition, List<ResultingAction>>> rulesList;
 
     static RuleEngine()
     {
-        rulesList = new List<KeyValuePair<Condition, List<ResultingActionE>>>(rules);
+        rulesList = new List<KeyValuePair<Condition, List<ResultingAction>>>(rules);
     }
 
-    public static List<ResultingActionE> PerformEvaluation(Condition condition)
+    public static List<ResultingAction> PerformEvaluation(Condition condition)
     {
         /*
-        List<ResultingActionE> resultingActionList;
+        List<ResultingAction> resultingActionList;
         rules.TryGetValue(condition, out resultingActionList);
         return (resultingActionList);
         */
 
-        foreach (KeyValuePair<Condition, List<ResultingActionE>> kvp in rulesList)
+        foreach (KeyValuePair<Condition, List<ResultingAction>> kvp in rulesList)
         {
             if (ConditionMatches(condition, kvp.Key))
             {
@@ -166,7 +95,7 @@ public static class RuleEngine
         }
 
         Debug.Log("W zestawie regul nie znaleziono pasujacej do zadanego warunku!");
-        return new List<ResultingActionE>();
+        return new List<ResultingAction>();
     }
 
 

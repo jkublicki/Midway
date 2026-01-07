@@ -20,13 +20,7 @@ public class UnitManager : MonoBehaviour
     //unit state: fresh, done, can_shoot
     //unit manager state: animation_in_progress (moving, shooting), - to chyba juz raczej turn manager/game state manager
 
-    public enum UnitType
-    {
-        US_FIGHTER,
-        JP_FIGHTER,
-        US_BOMBER,
-        JP_BOMBER
-    }
+
 
 
 
@@ -35,7 +29,7 @@ public class UnitManager : MonoBehaviour
 
     public class Unit //https://x.com/i/grok?conversation=2005345584077517125
     {
-        public Unit(HexCoords _hexCoords, UnitType _unitType, HexTools.HexDirectionPT _direction, string _id, SceneState.PlayerE _player, GameObject _gameObject = null) //GameObject jest opcjonalny
+        public Unit(HexCoords _hexCoords, UnitType _unitType, HexDirection _direction, string _id, SceneState.PlayerE _player, GameObject _gameObject = null) //GameObject jest opcjonalny
         {
             HexCoords = _hexCoords;
             GmObject = _gameObject;
@@ -63,7 +57,7 @@ public class UnitManager : MonoBehaviour
         public HexCoords HexCoords;
         public GameObject GmObject;
         public UnitType UnitType;
-        public HexTools.HexDirectionPT Direction;
+        public HexDirection Direction;
         public string ID;
         public SceneState.PlayerE Player;
         public int MovesThisTurn;
@@ -79,13 +73,13 @@ public class UnitManager : MonoBehaviour
 
     private void SetInitialPositions() //tempshit?
     {
-        unitList.Add(new Unit(new HexCoords(-2, 2), UnitType.US_FIGHTER, HexTools.HexDirectionPT.EAST, "usf1", SceneState.PlayerE.PLAYER_1));
-        unitList.Add(new Unit(new HexCoords(-2, 3), UnitType.US_FIGHTER, HexTools.HexDirectionPT.NORTH_WEST, "usf2", SceneState.PlayerE.PLAYER_1));
-        unitList.Add(new Unit(new HexCoords(3, -1), UnitType.US_FIGHTER, HexTools.HexDirectionPT.SOUTH_WEST, "usf3", SceneState.PlayerE.PLAYER_1));
+        unitList.Add(new Unit(new HexCoords(-2, 2), UnitType.UsFighter, HexDirection.East, "usf1", SceneState.PlayerE.PLAYER_1));
+        unitList.Add(new Unit(new HexCoords(-2, 3), UnitType.UsFighter, HexDirection.NorthWest, "usf2", SceneState.PlayerE.PLAYER_1));
+        unitList.Add(new Unit(new HexCoords(3, -1), UnitType.UsFighter, HexDirection.SouthWest, "usf3", SceneState.PlayerE.PLAYER_1));
 
-        unitList.Add(new Unit(new HexCoords(1, 0), UnitType.JP_FIGHTER, HexTools.HexDirectionPT.SOUTH_EAST, "jpf1", SceneState.PlayerE.PLAYER_2));
-        unitList.Add(new Unit(new HexCoords(2, -3), UnitType.JP_FIGHTER, HexTools.HexDirectionPT.SOUTH_EAST, "jpf2", SceneState.PlayerE.PLAYER_2));
-        unitList.Add(new Unit(new HexCoords(0, -2), UnitType.JP_FIGHTER, HexTools.HexDirectionPT.SOUTH_WEST, "jpf3", SceneState.PlayerE.PLAYER_2));
+        unitList.Add(new Unit(new HexCoords(1, 0), UnitType.JpFighter, HexDirection.SouthEast, "jpf1", SceneState.PlayerE.PLAYER_2));
+        unitList.Add(new Unit(new HexCoords(2, -3), UnitType.JpFighter, HexDirection.SouthEast, "jpf2", SceneState.PlayerE.PLAYER_2));
+        unitList.Add(new Unit(new HexCoords(0, -2), UnitType.JpFighter, HexDirection.SouthWest, "jpf3", SceneState.PlayerE.PLAYER_2));
     }
 
     private void SpawnUnitGameObjects()
@@ -100,14 +94,14 @@ public class UnitManager : MonoBehaviour
 
             switch (unitList[i].UnitType)
             {
-                case UnitType.US_FIGHTER:
+                case UnitType.UsFighter:
                     prefab = UsFighterPrefab;
                     break;
-                case UnitType.JP_FIGHTER:
+                case UnitType.JpFighter:
                     prefab = JpFighterPrefab;
                     break;
-                //case UnitType.US_BOMBER:
-                //case UnitType.JP_BOMBER:
+                //case UnitType.UsBomber:
+                //case UnitType.JpBomber:
                 default:
                     prefab = UsFighterPrefab;
                     break;
@@ -135,20 +129,20 @@ public class UnitManager : MonoBehaviour
     
 
     //claude
-    IEnumerator MoveObject(Transform obj, Vector3 from, Vector3 to, HexTools.HexDirectionChangeE directionChange, bool IsMoved, System.Action onComplete = null) //opcjonalnie moze byc callback - kod do wykonania po
+    IEnumerator MoveObject(Transform obj, Vector3 from, Vector3 to, HexDirectionChange directionChange, bool IsMoved, System.Action onComplete = null) //opcjonalnie moze byc callback - kod do wykonania po
     {
         int direction = 0;
         int movedModifier = 0;
 
         switch (directionChange)
         {
-            case HexTools.HexDirectionChangeE.TO_LEFT:
+            case HexDirectionChange.ToLeft:
                 direction = 1;
                 break;
-            case HexTools.HexDirectionChangeE.TO_RIGHT:
+            case HexDirectionChange.ToRight:
                 direction = -1;
                 break;
-            case HexTools.HexDirectionChangeE.NA:
+            case HexDirectionChange.NA:
                 direction = 0;
                 break;
             default:
@@ -233,7 +227,7 @@ public class UnitManager : MonoBehaviour
 
 
         scene.SceneState.UnitMovementInProgress = true;
-        Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexTools.HexDirectionChangeE.NA, false, () =>
+        Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexDirectionChange.NA, false, () =>
         {
             scene.SceneState.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
@@ -254,13 +248,13 @@ public class UnitManager : MonoBehaviour
 
 
         scene.SceneState.UnitMovementInProgress = true;
-        Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexTools.HexDirectionChangeE.TO_LEFT, false, () =>
+        Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexDirectionChange.ToLeft, false, () =>
         {
             scene.SceneState.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
             unit.HexCoords = targetHex;
             //dodaæ zmianê direction
-            unit.Direction = HexTools.AdjacentDirection(unit.Direction, HexTools.HexDirectionChangeE.TO_LEFT);
+            unit.Direction = HexTools.AdjacentDirection(unit.Direction, HexDirectionChange.ToLeft);
         }
         ));
 
@@ -277,13 +271,13 @@ public class UnitManager : MonoBehaviour
 
 
         scene.SceneState.UnitMovementInProgress = true;
-        Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexTools.HexDirectionChangeE.TO_RIGHT, false, () =>
+        Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexDirectionChange.ToRight, false, () =>
         {
             scene.SceneState.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
             unit.HexCoords = targetHex;
             //dodaæ zmianê direction
-            unit.Direction = HexTools.AdjacentDirection(unit.Direction, HexTools.HexDirectionChangeE.TO_RIGHT);
+            unit.Direction = HexTools.AdjacentDirection(unit.Direction, HexDirectionChange.ToRight);
         }
         ));
 
@@ -296,7 +290,7 @@ public class UnitManager : MonoBehaviour
         Vector3 destinationPosition = new Vector3(HexTools.HexCoordsToCart(destination).x, unit.GmObject.transform.position.y, HexTools.HexCoordsToCart(destination).y);
 
         scene.SceneState.UnitMovementInProgress = true;
-        StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, destinationPosition, HexTools.HexDirectionChangeE.NA, true, () =>
+        StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, destinationPosition, HexDirectionChange.NA, true, () =>
         {
             scene.SceneState.UnitMovementInProgress = false;
             unit.HexCoords = destination;

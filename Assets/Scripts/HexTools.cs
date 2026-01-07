@@ -19,8 +19,6 @@ Kolumny są przechylone na lewo, srodowkowa 0
 public static class HexTools
 {
 
-
-    
    
     public static Vector2 HexCoordsToCart(HexCoords hexCoords)
     {
@@ -87,16 +85,6 @@ public static class HexTools
                 neighbors.Add(new HexCoords(q, r));
             }
         }
-            /*
-            String s = "";
-            foreach (HexCoords c in result)
-            {
-                s += "(" + c.q.ToString() + ", " + c.r.ToString() + "), ";
-
-            }
-            Debug.Log(s);
-            */
-
     }
 
 
@@ -114,31 +102,22 @@ public static class HexTools
             return Mathf.Max(dq, dr);
     }
 
-    public enum HexDirectionPT //point top
-    {
-        NORTH_WEST,
-        NORTH_EAST,
-        EAST,
-        SOUTH_EAST,
-        SOUTH_WEST,
-        WEST
-    }
 
-    public static float HexDirectionToRotation(HexDirectionPT direction)
+    public static float HexDirectionToRotation(HexDirection direction)
     {
         switch (direction)
         {
-            case HexDirectionPT.NORTH_WEST:
+            case HexDirection.NorthWest:
                 return 60.0f;
-            case HexDirectionPT.NORTH_EAST:
+            case HexDirection.NorthEast:
                 return 120.0f;
-            case HexDirectionPT.EAST:
+            case HexDirection.East:
                 return 180.0f;
-            case HexDirectionPT.SOUTH_EAST:
+            case HexDirection.SouthEast:
                 return 240.0f;
-            case HexDirectionPT.SOUTH_WEST:
+            case HexDirection.SouthWest:
                 return 300.0f;
-            case HexDirectionPT.WEST:
+            case HexDirection.West:
                 return 0.0f;
             default:
                 return 0.0f;
@@ -146,7 +125,7 @@ public static class HexTools
     }
 
     //https://www.redblobgames.com/grids/hexagons/#rotation
-    public static HexCoords RotateVector(HexCoords vector, HexDirectionPT originDirection, HexDirectionPT destinationDirection)
+    public static HexCoords RotateVector(HexCoords vector, HexDirection originDirection, HexDirection destinationDirection)
     {
         int rot = Mathf.RoundToInt((HexDirectionToRotation(destinationDirection) - HexDirectionToRotation(originDirection)) / 60.0f);
         if (rot < 0)
@@ -164,34 +143,34 @@ public static class HexTools
         return new HexCoords(qrs.x, qrs.y);
     }
 
-    public static HexCoords Neighbor(HexCoords originHexCoords, HexDirectionPT originDirection)
+    public static HexCoords Neighbor(HexCoords originHexCoords, HexDirection originDirection)
     {
         int deltaQ; 
         int deltaR;
 
         switch (originDirection)
         {
-            case HexDirectionPT.NORTH_WEST:
+            case HexDirection.NorthWest:
                 deltaQ = 0;
                 deltaR = -1;
                 break;
-            case HexDirectionPT.NORTH_EAST:
+            case HexDirection.NorthEast:
                 deltaQ = 1;
                 deltaR = -1;
                 break;
-            case HexDirectionPT.EAST:
+            case HexDirection.East:
                 deltaQ = 1;
                 deltaR = 0;
                 break;
-            case HexDirectionPT.SOUTH_EAST:
+            case HexDirection.SouthEast:
                 deltaQ = 0;
                 deltaR = 1;
                 break;
-            case HexDirectionPT.SOUTH_WEST:
+            case HexDirection.SouthWest:
                 deltaQ = -1;
                 deltaR = 1;
                 break;
-            case HexDirectionPT.WEST:
+            case HexDirection.West:
                 deltaQ = -1;
                 deltaR = 0;
                 break;
@@ -202,50 +181,45 @@ public static class HexTools
         return new HexCoords(originHexCoords.q + deltaQ, originHexCoords.r + deltaR);
     }
 
-    public enum HexDirectionChangeE
-    {
-        NA,
-        TO_LEFT,
-        TO_RIGHT,
-    }
 
-    public static HexDirectionPT AdjacentDirection(HexDirectionPT direction, HexDirectionChangeE change)
+
+    public static HexDirection AdjacentDirection(HexDirection direction, HexDirectionChange change)
     {
-        HexDirectionPT afterLeft;
-        HexDirectionPT afterRight;
-        HexDirectionPT afterNa;
+        HexDirection afterLeft;
+        HexDirection afterRight;
+        HexDirection afterNa;
 
         switch (direction) 
         {
-            case HexDirectionPT.NORTH_WEST:
-                afterLeft = HexDirectionPT.WEST;
-                afterRight = HexDirectionPT.NORTH_EAST;
-                afterNa = HexDirectionPT.NORTH_WEST;
+            case HexDirection.NorthWest:
+                afterLeft = HexDirection.West;
+                afterRight = HexDirection.NorthEast;
+                afterNa = HexDirection.NorthWest;
                 break;
-            case HexDirectionPT.NORTH_EAST:
-                afterLeft = HexDirectionPT.NORTH_WEST;
-                afterRight = HexDirectionPT.EAST;
-                afterNa = HexDirectionPT.NORTH_EAST;
+            case HexDirection.NorthEast:
+                afterLeft = HexDirection.NorthWest;
+                afterRight = HexDirection.East;
+                afterNa = HexDirection.NorthEast;
                 break;
-            case HexDirectionPT.EAST:
-                afterLeft = HexDirectionPT.NORTH_EAST;
-                afterRight = HexDirectionPT.SOUTH_EAST;
-                afterNa = HexDirectionPT.EAST;
+            case HexDirection.East:
+                afterLeft = HexDirection.NorthEast;
+                afterRight = HexDirection.SouthEast;
+                afterNa = HexDirection.East;
                 break;
-            case HexDirectionPT.SOUTH_EAST:
-                afterLeft = HexDirectionPT.EAST;
-                afterRight = HexDirectionPT.SOUTH_WEST;
-                afterNa = HexDirectionPT.SOUTH_EAST;
+            case HexDirection.SouthEast:
+                afterLeft = HexDirection.East;
+                afterRight = HexDirection.SouthWest;
+                afterNa = HexDirection.SouthEast;
                 break;
-            case HexDirectionPT.SOUTH_WEST:
-                afterLeft = HexDirectionPT.SOUTH_EAST;
-                afterRight = HexDirectionPT.WEST;
-                afterNa = HexDirectionPT.SOUTH_WEST;
+            case HexDirection.SouthWest:
+                afterLeft = HexDirection.SouthEast;
+                afterRight = HexDirection.West;
+                afterNa = HexDirection.SouthWest;
                 break;
-            case HexDirectionPT.WEST:
-                afterLeft = HexDirectionPT.SOUTH_WEST;
-                afterRight = HexDirectionPT.NORTH_WEST;
-                afterNa = HexDirectionPT.WEST;
+            case HexDirection.West:
+                afterLeft = HexDirection.SouthWest;
+                afterRight = HexDirection.NorthWest;
+                afterNa = HexDirection.West;
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(direction), direction, "Nieobsługiwany kierunek hexa");
@@ -253,11 +227,11 @@ public static class HexTools
 
         switch (change)
         {
-            case HexDirectionChangeE.NA:
+            case HexDirectionChange.NA:
                 return afterNa;
-            case HexDirectionChangeE.TO_LEFT: 
+            case HexDirectionChange.ToLeft: 
                 return afterLeft;
-            case HexDirectionChangeE.TO_RIGHT:
+            case HexDirectionChange.ToRight:
                 return afterRight;
             default:
                 throw new ArgumentOutOfRangeException(nameof(change), change, "Nieobsługiwana zmiana kierunku hexa");

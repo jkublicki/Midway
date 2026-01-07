@@ -1,21 +1,5 @@
-testy combat managera
-	- jest smród/problem - powielanie logiki silnika reguł
-		
-
-pomyslec nad combat overlay zaatakowanego - chyba combat overlay powinien byc instancjonowany dla a. atakujacego; b. obroncy - nieco inny
-	to powinno zgrabnie laczyc potrzeby hotseat i online 
-
-pomyslec nad uporzadkowaniem combat managera
-
-
-co dalej 
-
-- prezentacja stref?
-- karty?
-
-
-
-
+posprzatac troche kod, robic osobny branch, zaczac zapoznawac sie z online multiplayer na podstawie najprostszych funkcjonalnosci, typu przelaczanie tury
+dopiero potem wymyslac przebudowe architektury
 
 
 

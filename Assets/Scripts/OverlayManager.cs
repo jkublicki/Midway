@@ -13,13 +13,13 @@ public class OverlayManager : MonoBehaviour
 
     public bool IsOverlayVisible = false;
     public HexCoords ActiveHex; 
-    public HexTools.HexDirectionPT ActiveDirection;
+    public HexDirection ActiveDirection;
     public List<HexCoords> TargetHexes;
 
     
 
 
-    public void DisplayOverlay(HexCoords activeHex, HexTools.HexDirectionPT activeDirection, List<HexCoords> targets)
+    public void DisplayOverlay(HexCoords activeHex, HexDirection activeDirection, List<HexCoords> targets)
     {
         float yRotation = HexTools.HexDirectionToRotation(activeDirection);
         Quaternion rotation = Quaternion.Euler(ActiveUnitOverlayPrefab.transform.eulerAngles.x, yRotation, ActiveUnitOverlayPrefab.transform.eulerAngles.z);
