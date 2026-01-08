@@ -29,7 +29,7 @@ public class UnitManager : MonoBehaviour
 
     public class Unit //https://x.com/i/grok?conversation=2005345584077517125
     {
-        public Unit(HexCoords _hexCoords, UnitType _unitType, HexDirection _direction, string _id, SceneState.PlayerE _player, GameObject _gameObject = null) //GameObject jest opcjonalny
+        public Unit(HexCoords _hexCoords, UnitType _unitType, HexDirection _direction, string _id, SceneState.Player _player, GameObject _gameObject = null) //GameObject jest opcjonalny
         {
             HexCoords = _hexCoords;
             GmObject = _gameObject;
@@ -59,7 +59,7 @@ public class UnitManager : MonoBehaviour
         public UnitType UnitType;
         public HexDirection Direction;
         public string ID;
-        public SceneState.PlayerE Player;
+        public SceneState.Player Player;
         public int MovesThisTurn;
         public bool AttackedThisTurn;
     }
@@ -73,13 +73,13 @@ public class UnitManager : MonoBehaviour
 
     private void SetInitialPositions() //tempshit?
     {
-        unitList.Add(new Unit(new HexCoords(-2, 2), UnitType.UsFighter, HexDirection.East, "usf1", SceneState.PlayerE.PLAYER_1));
-        unitList.Add(new Unit(new HexCoords(-2, 3), UnitType.UsFighter, HexDirection.NorthWest, "usf2", SceneState.PlayerE.PLAYER_1));
-        unitList.Add(new Unit(new HexCoords(3, -1), UnitType.UsFighter, HexDirection.SouthWest, "usf3", SceneState.PlayerE.PLAYER_1));
+        unitList.Add(new Unit(new HexCoords(-2, 2), UnitType.UsFighter, HexDirection.East, "usf1", SceneState.Player.PLAYER_1));
+        unitList.Add(new Unit(new HexCoords(-2, 3), UnitType.UsFighter, HexDirection.NorthWest, "usf2", SceneState.Player.PLAYER_1));
+        unitList.Add(new Unit(new HexCoords(3, -1), UnitType.UsFighter, HexDirection.SouthWest, "usf3", SceneState.Player.PLAYER_1));
 
-        unitList.Add(new Unit(new HexCoords(1, 0), UnitType.JpFighter, HexDirection.SouthEast, "jpf1", SceneState.PlayerE.PLAYER_2));
-        unitList.Add(new Unit(new HexCoords(2, -3), UnitType.JpFighter, HexDirection.SouthEast, "jpf2", SceneState.PlayerE.PLAYER_2));
-        unitList.Add(new Unit(new HexCoords(0, -2), UnitType.JpFighter, HexDirection.SouthWest, "jpf3", SceneState.PlayerE.PLAYER_2));
+        unitList.Add(new Unit(new HexCoords(1, 0), UnitType.JpFighter, HexDirection.SouthEast, "jpf1", SceneState.Player.PLAYER_2));
+        unitList.Add(new Unit(new HexCoords(2, -3), UnitType.JpFighter, HexDirection.SouthEast, "jpf2", SceneState.Player.PLAYER_2));
+        unitList.Add(new Unit(new HexCoords(0, -2), UnitType.JpFighter, HexDirection.SouthWest, "jpf3", SceneState.Player.PLAYER_2));
     }
 
     private void SpawnUnitGameObjects()
@@ -300,7 +300,7 @@ public class UnitManager : MonoBehaviour
 
     }
 
-    public void OnTurnStart(SceneState.PlayerE player)
+    public void OnTurnStart(SceneState.Player player)
     {
         foreach (Unit u in unitList.Where(u => u.Player == player))
         {

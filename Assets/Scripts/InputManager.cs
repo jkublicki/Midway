@@ -29,19 +29,19 @@ public class InputManager : MonoBehaviour
         //proste interakcje obs³u¿one w prosty sposob
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            scene.CameraManager.Pan(CameraManager.PanDirectionE.Left);
+            scene.CameraManager.Pan(CardinalDirection.Left);
         }
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            scene.CameraManager.Pan(CameraManager.PanDirectionE.Right);
+            scene.CameraManager.Pan(CardinalDirection.Right);
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            scene.CameraManager.Pan(CameraManager.PanDirectionE.Up);
+            scene.CameraManager.Pan(CardinalDirection.Up);
         }
         if (Input.GetKey(KeyCode.DownArrow))
         {
-            scene.CameraManager.Pan(CameraManager.PanDirectionE.Down);
+            scene.CameraManager.Pan(CardinalDirection.Down);
         }
 
 

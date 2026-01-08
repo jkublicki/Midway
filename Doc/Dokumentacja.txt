@@ -19,6 +19,7 @@ jeżeli jakiś komponent jest potrzebny innemu komponentowi, manager referencji 
 jeżeli jakiś komponent potrzebuje choc jednego innego komponentu, dostaje referencję do managera referencji
 i z niego sobie bierze manager_ref_sceny.potrzebny_komponent.potrzebna_metoda()
 ponieważ prefaby nie zachowują referencji do elementów hierarchii (gubi im się zawartość zmiennej public na managera referencji), manager referencji jest singletonem
+zapewne lepiej byłoby, gdyby więcej managerów stało się singletonami
 
 # overlay
 ma być niszczony i odtwarzany od nowa; pod to są zrobione szczegóły, pooling będzie zbędny

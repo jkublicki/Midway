@@ -7,7 +7,7 @@ public class SceneState : MonoBehaviour
 
 
 
-    public enum PlayerE
+    public enum Player
     {
         PLAYER_1,
         PLAYER_2
@@ -16,20 +16,20 @@ public class SceneState : MonoBehaviour
     public bool UnitMovementInProgress = false;
 
 
-    private PlayerE activePlayer;
-    public PlayerE ActivePlayer => activePlayer;
+    private Player activePlayer;
+    public Player ActivePlayer => activePlayer;
 
 
     public void EndTurn()
     {
 
-        if (activePlayer == PlayerE.PLAYER_1)
+        if (activePlayer == Player.PLAYER_1)
         {
-            activePlayer = PlayerE.PLAYER_2;
+            activePlayer = Player.PLAYER_2;
         }
         else
         {
-            activePlayer = PlayerE.PLAYER_1;
+            activePlayer = Player.PLAYER_1;
         }
 
 
@@ -38,7 +38,7 @@ public class SceneState : MonoBehaviour
 
     void Start()
     {
-        activePlayer = PlayerE.PLAYER_1;
+        activePlayer = Player.PLAYER_1;
     }
 
     // Update is called once per frame

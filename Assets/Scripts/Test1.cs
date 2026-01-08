@@ -26,15 +26,18 @@ public class Test1 : MonoBehaviour
     void Start()
     {
         DebugTurnButton.onClick.AddListener(DebugSwitchPlayer);
-
         Application.logMessageReceived += (log, trace, type) =>
         {
+            // Get current timestamp
+            string timestamp = System.DateTime.Now.ToString("HH:mm:ss.fff");
+
+            // Format log with timestamp
+            string logWithTimestamp = $"[{timestamp}] {log}";
+
             var oldLines = LogText.text.Split(new[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries);
-            var keepLines = oldLines.Take(3); // weü 2 pierwsze stare linie
-            LogText.text = log + "\r\n" + string.Join("\r\n", keepLines);
+            var keepLines = oldLines.Skip(System.Math.Max(0, oldLines.Length - 3)); // keep last 3 lines
+            LogText.text = string.Join("\r\n", keepLines) + "\r\n" + logWithTimestamp;
         };
-
-
 
         //Debug.Log(HexTools.RotateVector(new HexCoords(-2, 2), HexDirection.West, HexDirection.NorthWest).ToString());
 

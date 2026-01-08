@@ -16,7 +16,7 @@ public class CombatManager : MonoBehaviour
     private UnitManager.Unit enemyUnit;
     private UnitManager.Unit ownUnitBackup;
     private UnitManager.Unit enemyUnitBackup;
-    private CombatStateE state;
+    private CombatState state;
     private float stateEnterTime;
     private HexDirectionChange? attackerFirstMove;
     private HexDirectionChange? attackerSecondMove;
@@ -38,30 +38,14 @@ public class CombatManager : MonoBehaviour
     public HexDirectionChange? DefenderFirstMove => defenderFirstMove;
     public HexDirectionChange? DefenderSecondMove => defenderSecondMove;
 
-    public enum CombatStateE
-    {
-        NO_COMBAT,
-        AWAITING_MOVES, //nie przewiduje mozliwosci anulowania, bo to by oglupialo przeciwnika
-        AUTOFILING_MOVES,
-        REVEALING_MOVES,
-        AWAITING_DEFENDER_CARD,
-        AWAITING_ATTACKER_CARD,
-        DOGFIGHT,
-        FINISHED
-    }
 
-    public enum CombatRoleE
-    {
-        ATTACKER,
-        DEFENDER
-    }
 
-    private Dictionary<CombatStateE, float> StateTimeouts = new Dictionary<CombatStateE, float>
+    private Dictionary<CombatState, float> StateTimeouts = new Dictionary<CombatState, float>
     {
-        { CombatStateE.AUTOFILING_MOVES, 2.0f },
-        { CombatStateE.AWAITING_MOVES, 15.0f },
-        { CombatStateE.AWAITING_DEFENDER_CARD, 10.0f },
-        { CombatStateE.AWAITING_ATTACKER_CARD, 10.0f }
+        { CombatState.AutofilingMoves, 2.0f },
+        { CombatState.AwaitingMoves, 15.0f },
+        { CombatState.AwaitingDefenderCard, 10.0f },
+        { CombatState.AwaitingAttackerCard, 10.0f }
     };
 
     public void Initialize(UnitManager.Unit _ownUnit, UnitManager.Unit _enemyUnit)
@@ -73,7 +57,7 @@ public class CombatManager : MonoBehaviour
         enemyUnitBackup = new UnitManager.Unit(_enemyUnit);
 
         //stan poczatkowy
-        ChangeCombatState(CombatStateE.AWAITING_MOVES);
+        ChangeCombatState(CombatState.AwaitingMoves);
     }
 
     public void Cancel()
@@ -84,7 +68,7 @@ public class CombatManager : MonoBehaviour
         }
 
         //stan
-        state = CombatStateE.NO_COMBAT;
+        state = CombatState.NoCombat;
 
         //dane - czyszczenie wszystkich danych
         Reset();
@@ -101,9 +85,9 @@ public class CombatManager : MonoBehaviour
 
 
 
-    public void SetMove(HexDirectionChange direction, CombatRoleE combatRole)
+    public void SetMove(HexDirectionChange direction, CombatRole combatRole)
     {
-        if (combatRole == CombatRoleE.ATTACKER)
+        if (combatRole == CombatRole.Attacker)
         {
             if (attackerFirstMove == null)
             {
@@ -300,7 +284,7 @@ public class CombatManager : MonoBehaviour
     //wyczyszczenie stanu combat managera - ma byc zawsze robione na koniec
     private void Reset()
     {
-        ChangeCombatState(CombatStateE.NO_COMBAT);
+        ChangeCombatState(CombatState.NoCombat);
 
 
         ownUnit = null;
@@ -333,11 +317,11 @@ public class CombatManager : MonoBehaviour
 
 
 
-    private void OnStateEnter(CombatStateE entering)
+    private void OnStateEnter(CombatState entering)
     {
         switch (state)
         {
-            case CombatStateE.AWAITING_MOVES:
+            case CombatState.AwaitingMoves:
 
                 ownUnit.AttackedThisTurn = true;
                 //interfejsy
@@ -349,16 +333,16 @@ public class CombatManager : MonoBehaviour
                 //tymczasowy brudny test
                 TempshitTestSetEnemyMoves();
                 break;
-            case CombatStateE.AUTOFILING_MOVES:
+            case CombatState.AutofilingMoves:
                 //tempshit do testow, docelowo to przyjdzie od klienta drugiego gracza, z nieistniejacego jeszcze interfejsu
                 AutofillMoves();
                 scene.CombatOverlay.HideArrows();
                 break;
-            case CombatStateE.REVEALING_MOVES:
+            case CombatState.RevealingMoves:
                 //tu odpalic MoveSequence
                 StartCoroutine(MoveSequence());
                 break;
-            case CombatStateE.DOGFIGHT:
+            case CombatState.Dogfight:
                 //sprawdzic czy ktorys (lub oba) wylecial za mape
                 if (!scene.Terrain.TerrainHexCoordsList.Contains(ownUnit.HexCoords) || !scene.Terrain.TerrainHexCoordsList.Contains(enemyUnit.HexCoords))
                 {
@@ -372,7 +356,7 @@ public class CombatManager : MonoBehaviour
                         scene.Unit.DestroyUnit(enemyUnit);
                         Debug.Log("Zaatakowany wylecia³ poza mapê i spad³ z braku paliwa.");
                     }
-                    ChangeCombatState(CombatStateE.FINISHED);
+                    ChangeCombatState(CombatState.Finished);
                     break;
                 }
 
@@ -380,7 +364,7 @@ public class CombatManager : MonoBehaviour
                 if (HexTools.HexDistance(ownUnit.HexCoords, enemyUnit.HexCoords) > 3)
                 {
                     Debug.Log("Uczestnicy starcia oddalili siê od siebie.");
-                    ChangeCombatState(CombatStateE.FINISHED);
+                    ChangeCombatState(CombatState.Finished);
                     break;
                 }
 
@@ -465,10 +449,10 @@ public class CombatManager : MonoBehaviour
                 }
 
 
-                ChangeCombatState(CombatStateE.FINISHED);
+                ChangeCombatState(CombatState.Finished);
                 break;
 
-            case CombatStateE.FINISHED:
+            case CombatState.Finished:
                 Reset();
                 scene.Orchestrator.ServiceCombatFinish();
                 break;
@@ -479,12 +463,12 @@ public class CombatManager : MonoBehaviour
         }
     }
 
-    private void OnStateExit(CombatStateE exiting)
+    private void OnStateExit(CombatState exiting)
     {
 
     }
 
-    private void ChangeCombatState(CombatStateE newState)
+    private void ChangeCombatState(CombatState newState)
     {
         Debug.Log("Combat state: " + state + " -> " + newState);
 
@@ -510,28 +494,28 @@ public class CombatManager : MonoBehaviour
     {
         switch (state)
         {
-            case CombatStateE.AWAITING_MOVES:
+            case CombatState.AwaitingMoves:
                 if (defenderFirstMove != null && defenderSecondMove != null && attackerFirstMove != null && attackerSecondMove != null)
                 {
-                    ChangeCombatState(CombatStateE.REVEALING_MOVES);
+                    ChangeCombatState(CombatState.RevealingMoves);
                 }
-                else if (Time.time - stateEnterTime > StateTimeouts[CombatStateE.AWAITING_MOVES])
+                else if (Time.time - stateEnterTime > StateTimeouts[CombatState.AwaitingMoves])
                 {
                     //automatycznie ustawic ruchy
-                    ChangeCombatState(CombatStateE.AUTOFILING_MOVES);
+                    ChangeCombatState(CombatState.AutofilingMoves);
                 }
                 break;
-            case CombatStateE.AUTOFILING_MOVES:
-                if (Time.time - stateEnterTime > StateTimeouts[CombatStateE.AUTOFILING_MOVES])
+            case CombatState.AutofilingMoves:
+                if (Time.time - stateEnterTime > StateTimeouts[CombatState.AutofilingMoves])
                 {
                     //automatycznie ustawic ruchy; ma³a pauza i isc dalej
-                    ChangeCombatState(CombatStateE.REVEALING_MOVES);
+                    ChangeCombatState(CombatState.RevealingMoves);
                 }
                 break;
-            case CombatStateE.REVEALING_MOVES:
+            case CombatState.RevealingMoves:
                 if (moveSequenceIsDone)
                 {
-                    ChangeCombatState(CombatStateE.DOGFIGHT);
+                    ChangeCombatState(CombatState.Dogfight);
                 }
                 
 

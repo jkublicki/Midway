@@ -19,15 +19,7 @@ public class CameraManager : MonoBehaviour
     private Vector3 cameraDefaultPositon;
 
 
-    public enum PanDirectionE
-    {
-        Left,
-        Right,
-        Up,
-        Down
-    }
-
-    public void Pan(PanDirectionE direction)
+    public void Pan(CardinalDirection direction)
     {
         float d = PanSpeed * Time.deltaTime;
 
@@ -39,7 +31,7 @@ public class CameraManager : MonoBehaviour
         //kiedyœ poprawic: niech nie akumuluja sie bledy i niech bedzie kompatybilne z dowolnym ustawieniem kamery
         switch (direction)
         {
-            case PanDirectionE.Left:                
+            case CardinalDirection.Right:                
                 if (deviationHorizontal < -MaxDeviationHorizontal)
                 {
                     return;
@@ -47,7 +39,7 @@ public class CameraManager : MonoBehaviour
                 camera.transform.position = new Vector3(origin.x + d, origin.y, origin.z - d);
                 deviationHorizontal -= d;                
                 break;
-            case PanDirectionE.Right:
+            case CardinalDirection.Left:
                 if (deviationHorizontal > MaxDeviationHorizontal)
                 {
                     return;
@@ -55,7 +47,7 @@ public class CameraManager : MonoBehaviour
                 camera.transform.position = new Vector3(origin.x - d, origin.y, origin.z + d);
                 deviationHorizontal += d;
                 break;
-            case PanDirectionE.Up:
+            case CardinalDirection.Down:
                 if (deviationVertical > MaxDeviationVertical)
                 {
                     return;
@@ -63,7 +55,7 @@ public class CameraManager : MonoBehaviour
                 camera.transform.position = new Vector3(origin.x - d, origin.y, origin.z - d);
                 deviationVertical += d;
                 break;
-            case PanDirectionE.Down:
+            case CardinalDirection.Up:
                 if (deviationVertical < -MaxDeviationVertical)
                 {
                     return;
