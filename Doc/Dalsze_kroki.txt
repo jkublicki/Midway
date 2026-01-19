@@ -1,4 +1,23 @@
+## wprawka z network
+https://claude.ai/chat/06244cac-6353-4828-bd7c-03a456d90b7e
+	>>> następny krok: uporządkowanie co jest gdzie na scenie, bo nie wszystko jest ok, np. ten prefab - podsumowanie na koncu https://claude.ai/chat/06244cac-6353-4828-bd7c-03a456d90b7e
+
+
+problemy:
+	//autentykacja jeszcze trwa, a komponenty już strzelają o listę lobby
+	ww. rozwiązany brzydkim hackiem, zastąpić ładnym await - dac to do refaktoryzacji agentowi
+
+
+## midway
 posprzatac troche kod, robic osobny branch, zaczac zapoznawac sie z online multiplayer na podstawie najprostszych funkcjonalnosci, typu przelaczanie tury
+
+	zrefaktoryzować trochę combat managera, wydzielić move executor i dogfight https://claude.ai/chat/232389ec-db25-4be5-842f-ac82603e1779
+		przegląd using 
+		w tym using static HexTools; - skąd to się wzięło? ma być x = HexTools.Neighbor() zawsze, a nie x = Neighbor(), 
+
+
+
+
 dopiero potem wymyslac przebudowe architektury
 
 
@@ -14,3 +33,52 @@ odwrócic kierunki strzalek do przesuwania mapy
 
 
 
+
+
+
+# network
+
+Plan:
+//1. zrobić w LobbyTest1 test użycia metody [ClientRpc] bez użycia zmiennej typu NetworkList
+//2. nowy branch Midway -tag do backupowania (dzialajacy-hotseat)
+3. powolutku zacząć tam dodawać cały boilerplate network i budować scenę menu
+	skrypt do zarządzania interfejsem (i niczego więcej!) - dodać tam stan początkowy, przed pobraniem lobby i możliwością tworzenia
+4. powolutku zacząć testować wysyłanie zdarzeń, zaczynając od ruchu
+
+
+
+a) analogicznie jak LobbyTest1
+SubmitTurnServerRpc(text) //zamiast turn może być inne zdarzenie
+{
+	turnHistory.Add(text) //to jest NetworkList<FixedString128Bytes>; ma zdarzenie turnHistory.OnListChanged += OnHistoryChanged;
+}
+
+b) lepiej - zwyczajnie wsłać event/komendę
+https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@1.0/api/Unity.Netcode.ClientRpcAttribute.html
+Gracz 1 klika hex
+SubmitMoveServerRpc(unitId, hex) → SERWER
+Serwer waliduje
+ExecuteMoveClientRpc(unitId, hex) → WSZYSCY KLIENCI
+Każdy klient wywołuje: currentUnit.Move()
+
+public class NetworkEventManager : NetworkBehaviour
+{
+    [ServerRpc(RequireOwnership = false)]
+    public void SubmitMoveServerRpc(int unitId, Vector2Int targetHex, ServerRpcParams rpcParams = default)
+    {
+        // Walidacja na serwerze
+        if (!IsValidMove(unitId, targetHex)) return;
+        if (!IsCorrectPlayerTurn(rpcParams.Receive.SenderClientId)) return;
+        
+        // Powiedz WSZYSTKIM żeby wykonali ten ruch
+        ExecuteMoveClientRpc(unitId, targetHex);
+    }
+    
+    [ClientRpc]
+    private void ExecuteMoveClientRpc(int unitId, Vector2Int targetHex)
+    {
+        // To zadziała u WSZYSTKICH klientów (włącznie z tym który wysłał)
+        var unit = FindUnitById(unitId);
+        unit.Move(targetHex);  // Twoja istniejąca metoda!
+    }
+}
