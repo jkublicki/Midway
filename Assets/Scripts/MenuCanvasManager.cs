@@ -10,6 +10,8 @@ public class MenuCanvasManager : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
+    public static MenuCanvasManager Instance { get; private set; }
+
     public TextMeshProUGUI ServerCount;
     public TextMeshProUGUI CentralMessage;
 
@@ -19,6 +21,8 @@ public class MenuCanvasManager : MonoBehaviour
     public Button CreateServerButton;
 
     public GameObject ServerPanel;
+    public TextMeshProUGUI ServerName;
+    public TextMeshProUGUI ServerDescription;
 
     private int currentServer = 0;
 
@@ -70,6 +74,14 @@ public class MenuCanvasManager : MonoBehaviour
         {
             NextServerButton.interactable = false;
         }
+
+        if (serverListCache[currentServer] != null)
+        {
+            ServerName.text = serverListCache[currentServer].Name;
+            ServerDescription.text = ServerDescription.text = $"ID: {serverListCache[currentServer].Id} | " +
+                $"  {serverListCache[currentServer].Players.Count}/{serverListCache[currentServer].MaxPlayers} | Host: {serverListCache[currentServer].HostId} | " +
+                $"Private: {serverListCache[currentServer].IsPrivate} | Locked: {serverListCache[currentServer].IsLocked}";
+        }
     }
 
 
@@ -105,12 +117,17 @@ public class MenuCanvasManager : MonoBehaviour
         StartCoroutine(SlideServerPanel(true));
     }
 
+    private void OnCreateServerClick()
+    {
+        MenuSceneManager.Instance.CreateGame(CentralMessage, CreateServerButton);
+    }
+
     private IEnumerator SlideServerPanel(bool upwards)
     {
         IsAnimatonInProgress = true;
-        float duration = 0.4f;
-        float maxDistance = 300.0f;
-        float pow = 2.0f;
+        float duration = 0.3f;
+        float maxDistance = 250.0f;
+        float pow = 1.5f;
         Vector3 startPosition = ServerPanel.transform.position;
         float sign = 1.0f;
 
@@ -135,10 +152,26 @@ public class MenuCanvasManager : MonoBehaviour
 
 
 
-    void Start()
+
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
+
+
+
+    async void Start()
     {
         PreviousServerButton.onClick.AddListener(OnPreviousClick);
         NextServerButton.onClick.AddListener(OnNextClick);
+
+        CreateServerButton.onClick.AddListener(OnCreateServerClick);
 
         CentralMessage.text = "Refreshing lobby…";
         JoinButton.interactable = false;
@@ -147,17 +180,8 @@ public class MenuCanvasManager : MonoBehaviour
         PreviousServerButton.interactable = false;
         NextServerButton.interactable = false;
 
-        //test
-        
-        List<Lobby> testList = new List<Lobby>();
 
-        for (int i = 0; i < 10; i++)
-        {
-            Lobby lobby = new Lobby();
-            testList.Add(lobby);
-        }
-        UpdateServers(testList);
-        
+
     }
 
     // Update is called once per frame
