@@ -122,6 +122,11 @@ public class MenuCanvasManager : MonoBehaviour
         MenuSceneManager.Instance.CreateGame(CentralMessage, CreateServerButton);
     }
 
+    private void OnJoinClick()
+    {
+        MenuSceneManager.Instance.JoinGame(serverListCache[currentServer].Id, CentralMessage, CreateServerButton);
+    }
+
     private IEnumerator SlideServerPanel(bool upwards)
     {
         IsAnimatonInProgress = true;
@@ -172,6 +177,7 @@ public class MenuCanvasManager : MonoBehaviour
         NextServerButton.onClick.AddListener(OnNextClick);
 
         CreateServerButton.onClick.AddListener(OnCreateServerClick);
+        JoinButton.onClick.AddListener(OnJoinClick);
 
         CentralMessage.text = "Refreshing lobby…";
         JoinButton.interactable = false;

@@ -11,6 +11,37 @@ public class MenuSceneManager : MonoBehaviour
     public static MenuSceneManager Instance;
 
 
+    public async void JoinGame(string lobbyId, TextMeshProUGUI messageTextField, Button joinGameButton)
+    {
+        joinGameButton.interactable = false;
+        messageTextField.text = "Joining game...";
+
+        bool joined = await LobbyManager.Instance.JoinLobbyById(lobbyId);
+        if (!joined)
+        {
+            messageTextField.text = "Failed to join lobby";
+            return;
+        }
+
+        string relayJoinCode = LobbyManager.Instance.GetRelayJoinCode();
+        if (string.IsNullOrEmpty(relayJoinCode))
+        {
+            messageTextField.text = "No relay code found";
+            return;
+        }
+
+        bool relayJoined = await RelayManager.Instance.JoinRelay(relayJoinCode);
+        if (!relayJoined)
+        {
+            messageTextField.text = "Failed to join relay";
+            return;
+        }
+
+        NetworkManager.Singleton.StartClient(); //Netcode automatically synchronizes the scene
+        messageTextField.text = "Connecting...";
+    }
+
+
     public async void CreateGame(TextMeshProUGUI messageTextField, Button createGameButton)
     {
         messageTextField.text = "Creating game...";
@@ -40,7 +71,7 @@ public class MenuSceneManager : MonoBehaviour
         messageTextField.text = "Starting as host...";
 
         // Load game scene
-        //NetworkManager.Singleton.SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene("BattleScene", LoadSceneMode.Single);
     }
 
 

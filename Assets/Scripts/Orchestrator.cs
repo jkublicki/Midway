@@ -280,7 +280,8 @@ public class Orchestrator : MonoBehaviour
 
     private void ServiceActionMoveUnitForward(UnitManager.Unit unit)
     {
-        scene.Unit.MoveForward(unit);
+        //scene.Unit.MoveForward(unit);
+        NetworkBridge.Instance.SubmitMoveForwardServerRpc(unit.ID);
     }
 
     private void ServiceActionMoveUnitLeft(UnitManager.Unit unit)

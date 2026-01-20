@@ -39,6 +39,8 @@ public class SceneState : MonoBehaviour
     void Start()
     {
         activePlayer = Player.PLAYER_1;
+
+        
     }
 
     // Update is called once per frame

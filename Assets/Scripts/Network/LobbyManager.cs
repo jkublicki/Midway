@@ -10,6 +10,8 @@ public class LobbyManager : MonoBehaviour
     public static LobbyManager Instance { get; private set; }
 
     private Lobby currentLobby;
+    public Lobby CurrentLobby => currentLobby; //read only
+
     private float heartbeatTimer = 0f;
     private float lobbyUpdateTimer = 0f;
     private const float heartbeatInterval = 15f;

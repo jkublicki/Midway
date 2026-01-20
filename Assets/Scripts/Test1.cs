@@ -39,6 +39,10 @@ public class Test1 : MonoBehaviour
             LogText.text = string.Join("\r\n", keepLines) + "\r\n" + logWithTimestamp;
         };
 
+
+        Debug.Log("JOINED GAME " + LobbyManager.Instance.CurrentLobby.Name + ", ID: " + LobbyManager.Instance.CurrentLobby.Id);
+
+
         //Debug.Log(HexTools.RotateVector(new HexCoords(-2, 2), HexDirection.West, HexDirection.NorthWest).ToString());
 
 
