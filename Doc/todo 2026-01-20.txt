@@ -1,0 +1,38 @@
+błąd z tym, że overlay pokazuje sie w miejscu startu na kliencie, na serwerze działa dobrze
+przyczyna:
+klient: chowa overlay, powiadamia serwer o ruchu i następnie - zadowolony z siebie że powiadomienie się udało, przechodzi do następnej akcji - pokazania overlay. na serwerze powiadomienie i wykonanie ruchu jest natychmiastowe, a uruchomienie ruchu ustawia move in progress
+rozwiązanie 1:
+ustawiać przed zgłoszeniem do serwera ruchu move in progress
+rozwiązanie 2:
+trochę czystsze: przy zgłaszaniu do serwera przekazywać id zgłaszającej instancji gry i potem przy obsłudze w client rpc pomijać akcję, jeżeli NetworkManager.Singleton.LocalClientId == senderClientId)
+
+
+
+dodac obsluge sieciowa move x2, swap x3, destroy //2h
+
+dodac obsluge sieciowa cbt //łącznie 8
+- popup dla pasywnego //1
+- stany na popupach - na co czekamy, ile jeszcze czekamy //1
+- wszystkie stany //1
+- inicjator-autorytet ws. zmian stanów; pasywny-przyjmuje komendy zmiany stanu
+- decyzje nt. cbt moves //1
+- dicecards - każdy wysyła swoje //0.5
+- rezultat od inicjatora //0.5
+- różne emergent przy okazji //3
+
+poprawić elastyczność elementow ui //2
+dodac sterowanie kam na mobile //1
+oddalić kam na desktop, zbliżyć na mobile //0.5
+
+dodac obsluge wyjscia / zakonczenia //1
+
+
+zarządzanie trami
+- przypisanie instancji do PL1 lub PL2 przy dołączeniu
+- faza rozstawiania
+- oznaczenie w ui co jeszcze ready, jakiś pasek do timeoutu
+- warunki zakończenie tr
+- obsługa sieciowa zakończenia tr
+
+
+

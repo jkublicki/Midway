@@ -35,6 +35,36 @@ public class NetworkBridge : NetworkBehaviour
         SceneManagerReferences.Instance.Unit.MoveForward(unit);
     }
 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void SubmitMoveLeftServerRpc(string unitId) //unitOrigin jako surgat ID
+    {
+        ServiceMoveLeftClientRpc(unitId);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ServiceMoveLeftClientRpc(string unitId)
+    {
+        Debug.Log("ServiceMoveForwardClientRpc dla jednostki " + unitId.ToString());
+
+        UnitManager.Unit unit = SceneManagerReferences.Instance.Unit.UnitList.FirstOrDefault(u => u.ID.Equals(unitId));
+        SceneManagerReferences.Instance.Unit.MoveLeft(unit);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void SubmitMoveRightServerRpc(string unitId) //unitOrigin jako surgat ID
+    {
+        ServiceMoveRightClientRpc(unitId);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ServiceMoveRightClientRpc(string unitId)
+    {
+        Debug.Log("ServiceMoveForwardClientRpc dla jednostki " + unitId.ToString());
+
+        UnitManager.Unit unit = SceneManagerReferences.Instance.Unit.UnitList.FirstOrDefault(u => u.ID.Equals(unitId));
+        SceneManagerReferences.Instance.Unit.MoveRight(unit);
+    }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

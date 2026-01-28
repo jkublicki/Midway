@@ -280,18 +280,20 @@ public class Orchestrator : MonoBehaviour
 
     private void ServiceActionMoveUnitForward(UnitManager.Unit unit)
     {
-        //scene.Unit.MoveForward(unit);
+        scene.SceneState.UnitMovementInProgress = true;
         NetworkBridge.Instance.SubmitMoveForwardServerRpc(unit.ID);
     }
 
     private void ServiceActionMoveUnitLeft(UnitManager.Unit unit)
     {
-        scene.Unit.MoveLeft(unit);
+        scene.SceneState.UnitMovementInProgress = true;
+        NetworkBridge.Instance.SubmitMoveLeftServerRpc(unit.ID);
     }
 
     private void ServiceActionMoveUnitRight(UnitManager.Unit unit)
     {
-        scene.Unit.MoveRight(unit);
+        scene.SceneState.UnitMovementInProgress = true;
+        NetworkBridge.Instance.SubmitMoveRightServerRpc(unit.ID);
     }
 
     private void ServiceActionInitializeCombat(UnitManager.Unit attackedUnit, UnitManager.Unit activeUnit)
@@ -359,6 +361,7 @@ public class Orchestrator : MonoBehaviour
         scene = SceneManagerReferences.Instance;
     }
 
+    
     // Update is called once per frame
     void Update()
     {
@@ -366,6 +369,7 @@ public class Orchestrator : MonoBehaviour
         {
             ResultingAction currentAction = actionQueue.Dequeue();
 
+            
             //wykonujê to w update, aby unikn¹æ zagniezdzonych korutyn
             switch (currentAction)
             {
