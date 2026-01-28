@@ -7,8 +7,14 @@ rozwiązanie 2:
 trochę czystsze: przy zgłaszaniu do serwera przekazywać id zgłaszającej instancji gry i potem przy obsłudze w client rpc pomijać akcję, jeżeli NetworkManager.Singleton.LocalClientId == senderClientId)
 
 
+# TODO
 
-dodac obsluge sieciowa move x2, swap x3, destroy //2h
+//dodac obsluge sieciowa move x2, 
+
+dodac obsluge sieciowa swap x3, destroy //2h
+
+wymienić managery na singletony //1h
+wymienić dziwne odwołania do singletonów na normalne //1h
 
 dodac obsluge sieciowa cbt //łącznie 8
 - popup dla pasywnego //1
@@ -25,6 +31,7 @@ dodac sterowanie kam na mobile //1
 oddalić kam na desktop, zbliżyć na mobile //0.5
 
 dodac obsluge wyjscia / zakonczenia //1
+
 
 
 zarządzanie trami
