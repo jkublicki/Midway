@@ -171,87 +171,87 @@ public class CombatManager : MonoBehaviour
 
         //attacker 1
         scene.CombatOverlay.HideArrow(1);
-        UnitManager.Unit unitToSwap = scene.Unit.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(ownUnit.HexCoords, ownUnit.Direction)));
+        UnitManager.Unit unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(ownUnit.HexCoords, ownUnit.Direction)));
         if (unitToSwap != null)
         {
-            scene.Unit.BeMoved(unitToSwap, ownUnit.HexCoords);
+            UnitManager.Instance.BeMoved(unitToSwap, ownUnit.HexCoords);
             unitToSwap = null;
         }
         if (attackerFirstMove == HexDirectionChange.NA)
         {
-            yield return scene.Unit.MoveForward(ownUnit);
+            yield return UnitManager.Instance.MoveForward(ownUnit);
         }
         else if (attackerFirstMove == HexDirectionChange.ToLeft)
         {
-            yield return scene.Unit.MoveLeft(ownUnit);
+            yield return UnitManager.Instance.MoveLeft(ownUnit);
         }
         else
         {
-            yield return scene.Unit.MoveRight(ownUnit);
+            yield return UnitManager.Instance.MoveRight(ownUnit);
         }
         ownUnit.MovesThisTurn--;
 
         //defender 1
-        unitToSwap = scene.Unit.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(enemyUnit.HexCoords, enemyUnit.Direction)));
+        unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(enemyUnit.HexCoords, enemyUnit.Direction)));
         if (unitToSwap != null)
         {
-            scene.Unit.BeMoved(unitToSwap, enemyUnit.HexCoords);
+            UnitManager.Instance.BeMoved(unitToSwap, enemyUnit.HexCoords);
             unitToSwap = null;
         }
         if (defenderFirstMove == HexDirectionChange.NA)
         {
-            yield return scene.Unit.MoveForward(enemyUnit);
+            yield return UnitManager.Instance.MoveForward(enemyUnit);
         }
         else if (defenderFirstMove == HexDirectionChange.ToLeft)
         {
-            yield return scene.Unit.MoveLeft(enemyUnit);
+            yield return UnitManager.Instance.MoveLeft(enemyUnit);
         }
         else
         {
-            yield return scene.Unit.MoveRight(enemyUnit);
+            yield return UnitManager.Instance.MoveRight(enemyUnit);
         }
         enemyUnit.MovesThisTurn--;
 
         //attacker 2
         scene.CombatOverlay.HideArrow(2);
-        unitToSwap = scene.Unit.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(ownUnit.HexCoords, ownUnit.Direction)));
+        unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(ownUnit.HexCoords, ownUnit.Direction)));
         if (unitToSwap != null)
         {
-            scene.Unit.BeMoved(unitToSwap, ownUnit.HexCoords);
+            UnitManager.Instance.BeMoved(unitToSwap, ownUnit.HexCoords);
             unitToSwap = null;
         }        
         if (attackerSecondMove == HexDirectionChange.NA)
         {
-            yield return scene.Unit.MoveForward(ownUnit);
+            yield return UnitManager.Instance.MoveForward(ownUnit);
         }
         else if (attackerSecondMove == HexDirectionChange.ToLeft)
         {
-            yield return scene.Unit.MoveLeft(ownUnit);
+            yield return UnitManager.Instance.MoveLeft(ownUnit);
         }
         else
         {
-            yield return scene.Unit.MoveRight(ownUnit);
+            yield return UnitManager.Instance.MoveRight(ownUnit);
         }
         ownUnit.MovesThisTurn--;
 
         //defender 2
-        unitToSwap = scene.Unit.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(enemyUnit.HexCoords, enemyUnit.Direction)));
+        unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(enemyUnit.HexCoords, enemyUnit.Direction)));
         if (unitToSwap != null)
         {
-            scene.Unit.BeMoved(unitToSwap, enemyUnit.HexCoords);
+            UnitManager.Instance.BeMoved(unitToSwap, enemyUnit.HexCoords);
             unitToSwap = null;
         }
         if (defenderSecondMove == HexDirectionChange.NA)
         {
-            yield return scene.Unit.MoveForward(enemyUnit);
+            yield return UnitManager.Instance.MoveForward(enemyUnit);
         }
         else if (defenderSecondMove == HexDirectionChange.ToLeft)
         {
-            yield return scene.Unit.MoveLeft(enemyUnit);
+            yield return UnitManager.Instance.MoveLeft(enemyUnit);
         }
         else
         {
-            yield return scene.Unit.MoveRight(enemyUnit);
+            yield return UnitManager.Instance.MoveRight(enemyUnit);
         }
         enemyUnit.MovesThisTurn--;
 
@@ -348,12 +348,12 @@ public class CombatManager : MonoBehaviour
                 {
                     if (!scene.Terrain.TerrainHexCoordsList.Contains(ownUnit.HexCoords))
                     {
-                        scene.Unit.DestroyUnit(ownUnit);
+                        UnitManager.Instance.DestroyUnit(ownUnit);
                         Debug.Log("Napastnik wylecia³ poza mapê i spad³ z braku paliwa.");
                     }
                     if (!scene.Terrain.TerrainHexCoordsList.Contains(enemyUnit.HexCoords))
                     {
-                        scene.Unit.DestroyUnit(enemyUnit);
+                        UnitManager.Instance.DestroyUnit(enemyUnit);
                         Debug.Log("Zaatakowany wylecia³ poza mapê i spad³ z braku paliwa.");
                     }
                     ChangeCombatState(CombatState.Finished);
@@ -433,14 +433,14 @@ public class CombatManager : MonoBehaviour
                 if (attackerDices.Max() > defenderDices.Max() && defenderCanDie)
                 {
                     //smierc zaatakowanego
-                    scene.Unit.DestroyUnit(enemyUnit);
+                    UnitManager.Instance.DestroyUnit(enemyUnit);
                     Debug.Log("Zaatakowany zostal zestrzelony!");
                 }
                 else
                 if (defenderDices.Max() > attackerDices.Max() && attackerCanDie)
                 {
                     //smierc napastnika
-                    scene.Unit.DestroyUnit(ownUnit);
+                    UnitManager.Instance.DestroyUnit(ownUnit);
                     Debug.Log("Napastnik zostal zestrzelony!");
                 }
                 else

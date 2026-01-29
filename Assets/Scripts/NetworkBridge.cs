@@ -31,8 +31,8 @@ public class NetworkBridge : NetworkBehaviour
     {
         Debug.Log("ServiceMoveForwardClientRpc dla jednostki " + unitId.ToString());
 
-        UnitManager.Unit unit = SceneManagerReferences.Instance.Unit.UnitList.FirstOrDefault(u => u.ID.Equals(unitId));
-        SceneManagerReferences.Instance.Unit.MoveForward(unit);
+        UnitManager.Unit unit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID.Equals(unitId));
+        UnitManager.Instance.MoveForward(unit);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -46,8 +46,8 @@ public class NetworkBridge : NetworkBehaviour
     {
         Debug.Log("ServiceMoveForwardClientRpc dla jednostki " + unitId.ToString());
 
-        UnitManager.Unit unit = SceneManagerReferences.Instance.Unit.UnitList.FirstOrDefault(u => u.ID.Equals(unitId));
-        SceneManagerReferences.Instance.Unit.MoveLeft(unit);
+        UnitManager.Unit unit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID.Equals(unitId));
+        UnitManager.Instance.MoveLeft(unit);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -61,9 +61,25 @@ public class NetworkBridge : NetworkBehaviour
     {
         Debug.Log("ServiceMoveForwardClientRpc dla jednostki " + unitId.ToString());
 
-        UnitManager.Unit unit = SceneManagerReferences.Instance.Unit.UnitList.FirstOrDefault(u => u.ID.Equals(unitId));
-        SceneManagerReferences.Instance.Unit.MoveRight(unit);
+        UnitManager.Unit unit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID.Equals(unitId));
+        UnitManager.Instance.MoveRight(unit);
     }
+
+
+    // >>>>>>> dokonczyc
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void SubmitBeMovedServerRpc(string unitId, int destinationQ, int destinationR) //unitOrigin jako surgat ID
+    {
+        ServiceBeMovedClientRpc(unitId, destinationQ, destinationR);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ServiceBeMovedClientRpc(string unitId, int destinationQ, int destinationR)
+    {
+        UnitManager.Unit unit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID.Equals(unitId));
+        UnitManager.Instance.BeMoved(unit, new HexCoords(destinationQ, destinationR));
+    }
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

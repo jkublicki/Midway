@@ -52,7 +52,7 @@ public class Orchestrator : MonoBehaviour
 
         if (inputTarget == InputTarget.Attack)
         {
-            attackedUnit = scene.Unit.UnitList.FirstOrDefault(a => a.HexCoords.Equals(hex));
+            attackedUnit = UnitManager.Instance.UnitList.FirstOrDefault(a => a.HexCoords.Equals(hex));
         }
 
         HexCoords targetHexCoords;
@@ -74,7 +74,7 @@ public class Orchestrator : MonoBehaviour
         {
             targetHex = TargetHex.OffMap;
         }
-        else if (scene.Unit.UnitList.Any(u => u.HexCoords.Equals(targetHexCoords)))
+        else if (UnitManager.Instance.UnitList.Any(u => u.HexCoords.Equals(targetHexCoords)))
         {
             targetHex = TargetHex.Occupied;
         }
@@ -83,7 +83,7 @@ public class Orchestrator : MonoBehaviour
             targetHex = TargetHex.Empty;
         }
 
-        activeUnit = scene.Unit.UnitList.FirstOrDefault(u => u.HexCoords.Equals(scene.Overlay.ActiveHex));
+        activeUnit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(scene.Overlay.ActiveHex));
         int maxMoves = UnitStatsData.GetStats(activeUnit.UnitType).MaxMoves;
         
         if (activeUnit.MovesThisTurn + 1 == maxMoves)
@@ -154,7 +154,7 @@ public class Orchestrator : MonoBehaviour
         //je¿eli hex
         else if (inputTarget == InputTarget.Hex)
         {
-            UnitManager.Unit unitAtHex = scene.Unit.UnitList.FirstOrDefault(u => u.HexCoords.Equals(hexClicked));
+            UnitManager.Unit unitAtHex = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(hexClicked));
 
             //pusty hex
             if (unitAtHex == null)
@@ -251,7 +251,7 @@ public class Orchestrator : MonoBehaviour
 
     private void ServiceActionShowOverlay(UnitManager.Unit unitAtHex)
     {
-        List<UnitManager.Unit> enemies = scene.Unit.UnitList.Where(u => u.Player != scene.SceneState.ActivePlayer).ToList();
+        List<UnitManager.Unit> enemies = UnitManager.Instance.UnitList.Where(u => u.Player != scene.SceneState.ActivePlayer).ToList();
 
         List<HexCoords> hexesInAttackRange = UnitStatsData.InteractionArea(unitAtHex.HexCoords, unitAtHex.Direction, unitAtHex.UnitType, InteractionAreaType.AttackRange);
 
@@ -313,34 +313,40 @@ public class Orchestrator : MonoBehaviour
 
     private void ServiceActionSwapUnitsLeft(UnitManager.Unit unit)
     {
+        scene.SceneState.UnitMovementInProgress = true;
+        NetworkBridge.Instance.SubmitMoveLeftServerRpc(unit.ID);
+        
         HexCoords unitOrigin = unit.HexCoords;
         HexCoords unitDest = HexTools.Neighbor(unit.HexCoords, unit.Direction);
-        scene.Unit.MoveLeft(unit);
-        UnitManager.Unit unitToMove = scene.Unit.UnitList.FirstOrDefault(u => u.HexCoords.Equals(unitDest));
-        scene.Unit.BeMoved(unitToMove, unitOrigin);
+        UnitManager.Unit unitToMove = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(unitDest));
+        NetworkBridge.Instance.SubmitBeMovedServerRpc(unitToMove.ID, unitOrigin.q, unitOrigin.r);
     }
 
     private void ServiceActionSwapUnitsForward(UnitManager.Unit unit)
     {
+        scene.SceneState.UnitMovementInProgress = true;
+        NetworkBridge.Instance.SubmitMoveForwardServerRpc(unit.ID);
+
         HexCoords unitOrigin = unit.HexCoords;
         HexCoords unitDest = HexTools.Neighbor(unit.HexCoords, unit.Direction);
-        scene.Unit.MoveForward(unit);
-        UnitManager.Unit unitToMove = scene.Unit.UnitList.FirstOrDefault(u => u.HexCoords.Equals(unitDest));
-        scene.Unit.BeMoved(unitToMove, unitOrigin);
+        UnitManager.Unit unitToMove = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(unitDest));
+        NetworkBridge.Instance.SubmitBeMovedServerRpc(unitToMove.ID, unitOrigin.q, unitOrigin.r);
     }
 
     private void ServiceActionSwapUnitsRight(UnitManager.Unit unit)
     {
+        scene.SceneState.UnitMovementInProgress = true;
+        NetworkBridge.Instance.SubmitMoveRightServerRpc(unit.ID);
+
         HexCoords unitOrigin = unit.HexCoords;
         HexCoords unitDest = HexTools.Neighbor(unit.HexCoords, unit.Direction);
-        scene.Unit.MoveRight(unit);
-        UnitManager.Unit unitToMove = scene.Unit.UnitList.FirstOrDefault(u => u.HexCoords.Equals(unitDest));
-        scene.Unit.BeMoved(unitToMove, unitOrigin);
+        UnitManager.Unit unitToMove = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(unitDest));
+        NetworkBridge.Instance.SubmitBeMovedServerRpc(unitToMove.ID, unitOrigin.q, unitOrigin.r);
     }
 
     private void ServiceActionDestroyUnit(UnitManager.Unit unit)
     {
-        scene.Unit.DestroyUnit(unit);
+        UnitManager.Instance.DestroyUnit(unit);
     }
 
     private void Reset()

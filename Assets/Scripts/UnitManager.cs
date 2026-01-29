@@ -11,6 +11,22 @@ using static UnitManager;
 
 public class UnitManager : MonoBehaviour
 {
+    public static UnitManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+        }
+    }
+
+
     SceneManagerReferences scene;
 
     public GameObject UnitObjectsRoot;

@@ -22,7 +22,6 @@ public class SceneState : MonoBehaviour
 
     public void EndTurn()
     {
-
         if (activePlayer == Player.PLAYER_1)
         {
             activePlayer = Player.PLAYER_2;
@@ -32,8 +31,7 @@ public class SceneState : MonoBehaviour
             activePlayer = Player.PLAYER_1;
         }
 
-
-        scene.Unit.OnTurnStart(activePlayer);
+        UnitManager.Instance.OnTurnStart(activePlayer);
     }
 
     void Start()
