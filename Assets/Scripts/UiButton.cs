@@ -7,7 +7,7 @@ public class ButtonClickHandler : MonoBehaviour, IClickable
 
     public void OnClick()
     {
-        scene.Orchestrator.ServiceUiButtonClick(this.gameObject.tag);
+        Orchestrator.Instance.ServiceUiButtonClick(this.gameObject.tag);
 
     }
 

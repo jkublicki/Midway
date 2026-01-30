@@ -9,7 +9,7 @@ public class OverlayElement : MonoBehaviour, IClickable
 
     public void OnClick()
     {
-        scene.Orchestrator.ServiceOverlayClick(this.gameObject.tag, Hex);
+        Orchestrator.Instance.ServiceOverlayClick(this.gameObject.tag, Hex);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

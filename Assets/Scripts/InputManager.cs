@@ -104,7 +104,7 @@ public class InputManager : MonoBehaviour
 
 
             HexCoords hexClicked = HexTools.CartToHexCoords(new Vector2(hit.point.x, hit.point.z));
-            scene.Orchestrator.ServiceHexPlaneClick(hexClicked);
+            Orchestrator.Instance.ServiceHexPlaneClick(hexClicked);
         }
     }
 }

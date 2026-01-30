@@ -6,6 +6,23 @@ using UnityEngine;
 
 public class OverlayManager : MonoBehaviour
 {
+    public static OverlayManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+        }
+    }
+
+
+
     public GameObject OverlayElementsRoot;
 
     public GameObject ActiveUnitOverlayPrefab;

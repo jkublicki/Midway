@@ -66,7 +66,6 @@ public class NetworkBridge : NetworkBehaviour
     }
 
 
-    // >>>>>>> dokonczyc
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void SubmitBeMovedServerRpc(string unitId, int destinationQ, int destinationR) //unitOrigin jako surgat ID
     {
@@ -78,6 +77,19 @@ public class NetworkBridge : NetworkBehaviour
     {
         UnitManager.Unit unit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID.Equals(unitId));
         UnitManager.Instance.BeMoved(unit, new HexCoords(destinationQ, destinationR));
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void SubmitDestroyUnitServerRpc(string unitId) //unitOrigin jako surgat ID
+    {
+        ServiceDestroyUnitClientRpc(unitId);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ServiceDestroyUnitClientRpc(string unitId)
+    {
+        UnitManager.Unit unit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID.Equals(unitId));
+        UnitManager.Instance.DestroyUnit(unit);
     }
 
 

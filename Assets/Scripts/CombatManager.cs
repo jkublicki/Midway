@@ -344,14 +344,14 @@ public class CombatManager : MonoBehaviour
                 break;
             case CombatState.Dogfight:
                 //sprawdzic czy ktorys (lub oba) wylecial za mape
-                if (!scene.Terrain.TerrainHexCoordsList.Contains(ownUnit.HexCoords) || !scene.Terrain.TerrainHexCoordsList.Contains(enemyUnit.HexCoords))
+                if (!TerrainManager.Instance.TerrainHexCoordsList.Contains(ownUnit.HexCoords) || !TerrainManager.Instance.TerrainHexCoordsList.Contains(enemyUnit.HexCoords))
                 {
-                    if (!scene.Terrain.TerrainHexCoordsList.Contains(ownUnit.HexCoords))
+                    if (!TerrainManager.Instance.TerrainHexCoordsList.Contains(ownUnit.HexCoords))
                     {
                         UnitManager.Instance.DestroyUnit(ownUnit);
                         Debug.Log("Napastnik wylecia³ poza mapê i spad³ z braku paliwa.");
                     }
-                    if (!scene.Terrain.TerrainHexCoordsList.Contains(enemyUnit.HexCoords))
+                    if (!TerrainManager.Instance.TerrainHexCoordsList.Contains(enemyUnit.HexCoords))
                     {
                         UnitManager.Instance.DestroyUnit(enemyUnit);
                         Debug.Log("Zaatakowany wylecia³ poza mapê i spad³ z braku paliwa.");
@@ -454,7 +454,7 @@ public class CombatManager : MonoBehaviour
 
             case CombatState.Finished:
                 Reset();
-                scene.Orchestrator.ServiceCombatFinish();
+                Orchestrator.Instance.ServiceCombatFinish();
                 break;
 
 

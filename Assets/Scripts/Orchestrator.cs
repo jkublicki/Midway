@@ -8,6 +8,22 @@ using static RuleEngine;
 
 public class Orchestrator : MonoBehaviour
 {
+    public static Orchestrator Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+        }
+    }
+
+
 
     private SceneManagerReferences scene;
 
@@ -59,7 +75,7 @@ public class Orchestrator : MonoBehaviour
 
         if (inputTarget is InputTarget.ArrowLeft or InputTarget.ArrowForward or InputTarget.ArrowRight) //odpowiednik IN z SQL
         {
-            targetHexCoords = HexTools.Neighbor(scene.Overlay.ActiveHex, scene.Overlay.ActiveDirection);
+            targetHexCoords = HexTools.Neighbor(OverlayManager.Instance.ActiveHex, OverlayManager.Instance.ActiveDirection);
         }
         else if (hex != null)
         {
@@ -70,7 +86,7 @@ public class Orchestrator : MonoBehaviour
             throw new Exception("Brak informacji na jakim hexie kliknieto atak");
         }
 
-        if (!scene.Terrain.TerrainHexCoordsList.Contains(targetHexCoords))
+        if (!TerrainManager.Instance.TerrainHexCoordsList.Contains(targetHexCoords))
         {
             targetHex = TargetHex.OffMap;
         }
@@ -83,7 +99,7 @@ public class Orchestrator : MonoBehaviour
             targetHex = TargetHex.Empty;
         }
 
-        activeUnit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(scene.Overlay.ActiveHex));
+        activeUnit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(OverlayManager.Instance.ActiveHex));
         int maxMoves = UnitStatsData.GetStats(activeUnit.UnitType).MaxMoves;
         
         if (activeUnit.MovesThisTurn + 1 == maxMoves)
@@ -136,7 +152,7 @@ public class Orchestrator : MonoBehaviour
 
 
         //klik pochodzi z input plane tak naprawde, sprawdzic czy tam jest hex
-        if (scene.Terrain.TerrainHexCoordsList.Contains(hexClicked))
+        if (TerrainManager.Instance.TerrainHexCoordsList.Contains(hexClicked))
         {
             inputTarget = InputTarget.Hex;
         }
@@ -200,7 +216,7 @@ public class Orchestrator : MonoBehaviour
         targetHex = TargetHex.NA;
 
         //informcja czy byl aktywny samolot / czy widac bylo strzalki ruchu lub ruchu i ataku / czy poprzednio zaznaczony hex zawieral wlasny samolot zdolny do ruchu/ataku
-        if (scene.Overlay.IsOverlayVisible)
+        if (OverlayManager.Instance.IsOverlayVisible)
         {
             hasActiveUnit = HasActiveUnit.TRUE;
         }
@@ -265,17 +281,17 @@ public class Orchestrator : MonoBehaviour
             }
         }
 
-        scene.Overlay.DisplayOverlay(unitAtHex.HexCoords, unitAtHex.Direction, targets);
+        OverlayManager.Instance.DisplayOverlay(unitAtHex.HexCoords, unitAtHex.Direction, targets);
     }
 
     private void ServiceActionShowMoveOverlay(UnitManager.Unit unitAtHex)
     {
-        scene.Overlay.DisplayOverlay(unitAtHex.HexCoords, unitAtHex.Direction, new List<HexCoords> { });
+        OverlayManager.Instance.DisplayOverlay(unitAtHex.HexCoords, unitAtHex.Direction, new List<HexCoords> { });
     }
 
     private void ServiceActionHideOverlay()
     {
-        scene.Overlay.HideOverlay();
+        OverlayManager.Instance.HideOverlay();
     }
 
     private void ServiceActionMoveUnitForward(UnitManager.Unit unit)
@@ -346,7 +362,8 @@ public class Orchestrator : MonoBehaviour
 
     private void ServiceActionDestroyUnit(UnitManager.Unit unit)
     {
-        UnitManager.Instance.DestroyUnit(unit);
+        //UnitManager.Instance.DestroyUnit(unit);
+        NetworkBridge.Instance.SubmitDestroyUnitServerRpc(unit.ID);
     }
 
     private void Reset()

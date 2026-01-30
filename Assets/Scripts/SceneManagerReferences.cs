@@ -21,11 +21,11 @@ public class SceneManagerReferences : MonoBehaviour
 
 
 
-    public TerrainManager Terrain;
-    public UnitManager Unit;
-    public OverlayManager Overlay;
-    public HighlightManager Highlight;
-    public Orchestrator Orchestrator;
+    //public TerrainManager Terrain;
+    //public UnitManager Unit;
+    //public OverlayManager Overlay;
+    //public HighlightManager Highlight;
+    //public Orchestrator Orchestrator;
     public SceneState SceneState;
     public CombatOverlayManager CombatOverlay;
     public CameraManager CameraManager;

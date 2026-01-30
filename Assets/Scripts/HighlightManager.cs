@@ -7,6 +7,22 @@ using System.Linq;
 
 public class HighlightManager : MonoBehaviour
 {
+    public static HighlightManager Instance {get; private set;}
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+        }
+    }
+
+
     //[SerializeField] private SceneManagerReferences scene;
     private SceneManagerReferences scene;
 
@@ -21,7 +37,7 @@ public class HighlightManager : MonoBehaviour
         foreach (HexCoords hex in coords)
         {
             //pomin jezeli poza terenem, pomin jesli juz istnieje
-            if (!scene.Terrain.TerrainHexCoordsList.Contains(hex) 
+            if (!TerrainManager.Instance.TerrainHexCoordsList.Contains(hex) 
                 || OverlayHexCoordsList.Contains(hex))
             {
                 continue;

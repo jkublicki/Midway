@@ -1,12 +1,13 @@
 # TODO
 
 //dodac obsluge sieciowa move x2, 
+//dodac obsluge sieciowa swap x3, destroy //2h 
+
+
 
 wymienić managery na singletony //1h
 wymienić dziwne odwołania do singletonów na normalne //1h
 
-
-dodac obsluge sieciowa swap x3, destroy //2h 
 
 
 dodac obsluge sieciowa cbt //łącznie 8
