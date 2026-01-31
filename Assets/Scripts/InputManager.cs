@@ -11,16 +11,15 @@ public class InputManager : MonoBehaviour
     [SerializeField] private LayerMask hexLayer;
     [SerializeField] private Camera mainCamera;
     //public SceneManagerReferences scene;
-    private SceneManagerReferences scene;
 
     private void Start()
     {
-        scene = SceneManagerReferences.Instance;
+
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && !scene.SceneState.UnitMovementInProgress)
+        if (Input.GetMouseButtonDown(0) && !SceneState.Instance.UnitMovementInProgress)
         {
             HandleClick();
         }
@@ -29,19 +28,19 @@ public class InputManager : MonoBehaviour
         //proste interakcje obs³u¿one w prosty sposob
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            scene.CameraManager.Pan(CardinalDirection.Left);
+            CameraManager.Instance.Pan(CardinalDirection.Left);
         }
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            scene.CameraManager.Pan(CardinalDirection.Right);
+            CameraManager.Instance.Pan(CardinalDirection.Right);
         }
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            scene.CameraManager.Pan(CardinalDirection.Up);
+            CameraManager.Instance.Pan(CardinalDirection.Up);
         }
         if (Input.GetKey(KeyCode.DownArrow))
         {
-            scene.CameraManager.Pan(CardinalDirection.Down);
+            CameraManager.Instance.Pan(CardinalDirection.Down);
         }
 
 

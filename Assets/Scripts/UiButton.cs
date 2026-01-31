@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class ButtonClickHandler : MonoBehaviour, IClickable
 {
-    private SceneManagerReferences scene;
 
     public void OnClick()
     {
@@ -13,6 +12,6 @@ public class ButtonClickHandler : MonoBehaviour, IClickable
 
     void Start()
     {
-        scene = SceneManagerReferences.Instance;
+
     }
 }

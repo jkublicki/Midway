@@ -23,9 +23,6 @@ public class HighlightManager : MonoBehaviour
     }
 
 
-    //[SerializeField] private SceneManagerReferences scene;
-    private SceneManagerReferences scene;
-
     public GameObject HighlightObjectsRoot;
     public GameObject HighlightPrefab;
 
@@ -70,7 +67,7 @@ public class HighlightManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        scene = SceneManagerReferences.Instance;
+
     }
 
     // Update is called once per frame

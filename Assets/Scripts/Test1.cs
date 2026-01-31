@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class Test1 : MonoBehaviour
 {
-    public SceneManagerReferences Scene;
+
 
     public Button DebugTurnButton;
 
@@ -18,7 +18,7 @@ public class Test1 : MonoBehaviour
 
     private void DebugSwitchPlayer()
     {
-        Scene.SceneState.EndTurn();
+        SceneState.Instance.EndTurn();
     }
 
 

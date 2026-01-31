@@ -25,7 +25,7 @@ public class Orchestrator : MonoBehaviour
 
 
 
-    private SceneManagerReferences scene;
+
 
     private Queue<ResultingAction> actionQueue = new Queue<ResultingAction>();
 
@@ -178,7 +178,7 @@ public class Orchestrator : MonoBehaviour
                 inputHexContent = InputHexContent.Empty;
             }
             //wlasny samolot
-            else if (unitAtHex.Player == scene.SceneState.ActivePlayer)
+            else if (unitAtHex.Player == SceneState.Instance.ActivePlayer)
             {
                 //Debug.Log("O: klikniety wlasny samolot");
                 
@@ -267,7 +267,7 @@ public class Orchestrator : MonoBehaviour
 
     private void ServiceActionShowOverlay(UnitManager.Unit unitAtHex)
     {
-        List<UnitManager.Unit> enemies = UnitManager.Instance.UnitList.Where(u => u.Player != scene.SceneState.ActivePlayer).ToList();
+        List<UnitManager.Unit> enemies = UnitManager.Instance.UnitList.Where(u => u.Player != SceneState.Instance.ActivePlayer).ToList();
 
         List<HexCoords> hexesInAttackRange = UnitStatsData.InteractionArea(unitAtHex.HexCoords, unitAtHex.Direction, unitAtHex.UnitType, InteractionAreaType.AttackRange);
 
@@ -296,19 +296,19 @@ public class Orchestrator : MonoBehaviour
 
     private void ServiceActionMoveUnitForward(UnitManager.Unit unit)
     {
-        scene.SceneState.UnitMovementInProgress = true;
+        SceneState.Instance.UnitMovementInProgress = true;
         NetworkBridge.Instance.SubmitMoveForwardServerRpc(unit.ID);
     }
 
     private void ServiceActionMoveUnitLeft(UnitManager.Unit unit)
     {
-        scene.SceneState.UnitMovementInProgress = true;
+        SceneState.Instance.UnitMovementInProgress = true;
         NetworkBridge.Instance.SubmitMoveLeftServerRpc(unit.ID);
     }
 
     private void ServiceActionMoveUnitRight(UnitManager.Unit unit)
     {
-        scene.SceneState.UnitMovementInProgress = true;
+        SceneState.Instance.UnitMovementInProgress = true;
         NetworkBridge.Instance.SubmitMoveRightServerRpc(unit.ID);
     }
 
@@ -324,12 +324,12 @@ public class Orchestrator : MonoBehaviour
         //scene.CombatOverlay.DisplayOwnHighlight(activeUnit.HexCoords);
         //scene.CombatOverlay.DisplayEnemyHighlight(attackedUnit.HexCoords);
 
-        scene.CombatManager.Initialize(activeUnit, attackedUnit);
+        CombatManager.Instance.Initialize(activeUnit, attackedUnit);
     }
 
     private void ServiceActionSwapUnitsLeft(UnitManager.Unit unit)
     {
-        scene.SceneState.UnitMovementInProgress = true;
+        SceneState.Instance.UnitMovementInProgress = true;
         NetworkBridge.Instance.SubmitMoveLeftServerRpc(unit.ID);
         
         HexCoords unitOrigin = unit.HexCoords;
@@ -340,7 +340,7 @@ public class Orchestrator : MonoBehaviour
 
     private void ServiceActionSwapUnitsForward(UnitManager.Unit unit)
     {
-        scene.SceneState.UnitMovementInProgress = true;
+        SceneState.Instance.UnitMovementInProgress = true;
         NetworkBridge.Instance.SubmitMoveForwardServerRpc(unit.ID);
 
         HexCoords unitOrigin = unit.HexCoords;
@@ -351,7 +351,7 @@ public class Orchestrator : MonoBehaviour
 
     private void ServiceActionSwapUnitsRight(UnitManager.Unit unit)
     {
-        scene.SceneState.UnitMovementInProgress = true;
+        SceneState.Instance.UnitMovementInProgress = true;
         NetworkBridge.Instance.SubmitMoveRightServerRpc(unit.ID);
 
         HexCoords unitOrigin = unit.HexCoords;
@@ -381,14 +381,14 @@ public class Orchestrator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        scene = SceneManagerReferences.Instance;
+
     }
 
     
     // Update is called once per frame
     void Update()
     {
-        if (!scene.SceneState.UnitMovementInProgress && actionQueue.Count > 0)
+        if (!SceneState.Instance.UnitMovementInProgress && actionQueue.Count > 0)
         {
             ResultingAction currentAction = actionQueue.Dequeue();
 

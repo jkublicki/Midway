@@ -27,7 +27,7 @@ public class UnitManager : MonoBehaviour
     }
 
 
-    SceneManagerReferences scene;
+
 
     public GameObject UnitObjectsRoot;
     public GameObject UsFighterPrefab;
@@ -242,10 +242,10 @@ public class UnitManager : MonoBehaviour
         Vector3 targetPosition = new Vector3(HexTools.HexCoordsToCart(targetHex).x, unit.GmObject.transform.position.y, HexTools.HexCoordsToCart(targetHex).y);
 
 
-        scene.SceneState.UnitMovementInProgress = true;
+        SceneState.Instance.UnitMovementInProgress = true;
         Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexDirectionChange.NA, false, () =>
         {
-            scene.SceneState.UnitMovementInProgress = false;
+            SceneState.Instance.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
             unit.HexCoords = targetHex;
         }        
@@ -263,10 +263,10 @@ public class UnitManager : MonoBehaviour
         Vector3 targetPosition = new Vector3(HexTools.HexCoordsToCart(targetHex).x, unit.GmObject.transform.position.y, HexTools.HexCoordsToCart(targetHex).y);
 
 
-        scene.SceneState.UnitMovementInProgress = true;
+        SceneState.Instance.UnitMovementInProgress = true;
         Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexDirectionChange.ToLeft, false, () =>
         {
-            scene.SceneState.UnitMovementInProgress = false;
+            SceneState.Instance.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
             unit.HexCoords = targetHex;
             //dodaæ zmianê direction
@@ -286,10 +286,10 @@ public class UnitManager : MonoBehaviour
         Vector3 targetPosition = new Vector3(HexTools.HexCoordsToCart(targetHex).x, unit.GmObject.transform.position.y, HexTools.HexCoordsToCart(targetHex).y);
 
 
-        scene.SceneState.UnitMovementInProgress = true;
+        SceneState.Instance.UnitMovementInProgress = true;
         Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexDirectionChange.ToRight, false, () =>
         {
-            scene.SceneState.UnitMovementInProgress = false;
+            SceneState.Instance.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
             unit.HexCoords = targetHex;
             //dodaæ zmianê direction
@@ -305,10 +305,10 @@ public class UnitManager : MonoBehaviour
     {
         Vector3 destinationPosition = new Vector3(HexTools.HexCoordsToCart(destination).x, unit.GmObject.transform.position.y, HexTools.HexCoordsToCart(destination).y);
 
-        scene.SceneState.UnitMovementInProgress = true;
+        SceneState.Instance.UnitMovementInProgress = true;
         StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, destinationPosition, HexDirectionChange.NA, true, () =>
         {
-            scene.SceneState.UnitMovementInProgress = false;
+            SceneState.Instance.UnitMovementInProgress = false;
             unit.HexCoords = destination;
         }
         ));
@@ -335,7 +335,7 @@ public class UnitManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        scene = SceneManagerReferences.Instance;
+
 
         SetInitialPositions();
         SpawnUnitGameObjects();

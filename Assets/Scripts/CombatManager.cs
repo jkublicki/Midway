@@ -9,7 +9,21 @@ using static UnityEngine.Rendering.DebugUI;
 
 public class CombatManager : MonoBehaviour
 {
-    private SceneManagerReferences scene;
+    public static CombatManager Instance;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
+
+
+
+
 
 
     private UnitManager.Unit ownUnit;
@@ -75,10 +89,10 @@ public class CombatManager : MonoBehaviour
 
         //ukrycie interfejsow
         //chamskie bez sprawdzenia czy sa, ale powinny byc odporne na to - do refaktoryzacji?
-        scene.CombatOverlay.HideCombatOverlayPanel();
-        scene.CombatOverlay.HideArrows();
-        scene.CombatOverlay.HideEnemyHighlight();
-        scene.CombatOverlay.HideOwnHighlight();
+        CombatOverlayManager.Instance.HideCombatOverlayPanel();
+        CombatOverlayManager.Instance.HideArrows();
+        CombatOverlayManager.Instance.HideEnemyHighlight();
+        CombatOverlayManager.Instance.HideOwnHighlight();
         //dodac ukrywanie interfejsow przeciwnika
     }
 
@@ -164,13 +178,13 @@ public class CombatManager : MonoBehaviour
     //odtworzenie 4 ruchów po kolei
     IEnumerator MoveSequence()
     {
-        scene.CombatOverlay.HideOwnHighlight();
-        scene.CombatOverlay.HideEnemyHighlight();
+        CombatOverlayManager.Instance.HideOwnHighlight();
+        CombatOverlayManager.Instance.HideEnemyHighlight();
 
 
 
         //attacker 1
-        scene.CombatOverlay.HideArrow(1);
+        CombatOverlayManager.Instance.HideArrow(1);
         UnitManager.Unit unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(ownUnit.HexCoords, ownUnit.Direction)));
         if (unitToSwap != null)
         {
@@ -213,7 +227,7 @@ public class CombatManager : MonoBehaviour
         enemyUnit.MovesThisTurn--;
 
         //attacker 2
-        scene.CombatOverlay.HideArrow(2);
+        CombatOverlayManager.Instance.HideArrow(2);
         unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(ownUnit.HexCoords, ownUnit.Direction)));
         if (unitToSwap != null)
         {
@@ -325,10 +339,10 @@ public class CombatManager : MonoBehaviour
 
                 ownUnit.AttackedThisTurn = true;
                 //interfejsy
-                scene.CombatOverlay.ShowCombatOverlayPanel();
-                scene.CombatOverlay.DisplayArrows(ownUnit.HexCoords, ownUnit.Direction);
-                scene.CombatOverlay.DisplayOwnHighlight(ownUnit.HexCoords);
-                scene.CombatOverlay.DisplayEnemyHighlight(enemyUnit.HexCoords);
+                CombatOverlayManager.Instance.ShowCombatOverlayPanel();
+                CombatOverlayManager.Instance.DisplayArrows(ownUnit.HexCoords, ownUnit.Direction);
+                CombatOverlayManager.Instance.DisplayOwnHighlight(ownUnit.HexCoords);
+                CombatOverlayManager.Instance.DisplayEnemyHighlight(enemyUnit.HexCoords);
                 //pokazac iterfejsy obroncy
                 //tymczasowy brudny test
                 TempshitTestSetEnemyMoves();
@@ -336,7 +350,7 @@ public class CombatManager : MonoBehaviour
             case CombatState.AutofilingMoves:
                 //tempshit do testow, docelowo to przyjdzie od klienta drugiego gracza, z nieistniejacego jeszcze interfejsu
                 AutofillMoves();
-                scene.CombatOverlay.HideArrows();
+                CombatOverlayManager.Instance.HideArrows();
                 break;
             case CombatState.RevealingMoves:
                 //tu odpalic MoveSequence
@@ -484,7 +498,7 @@ public class CombatManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        scene = SceneManagerReferences.Instance;
+        
     }
 
     

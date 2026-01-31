@@ -8,9 +8,22 @@ using static RuleEngine;
 
 public class CombatOverlayManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public static CombatOverlayManager Instance;
 
-    private SceneManagerReferences scene;
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
+
+
+
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     [SerializeField] private GameObject combatOverlayPanel;
     [SerializeField] private Button closeButton;
@@ -45,7 +58,7 @@ public class CombatOverlayManager : MonoBehaviour
         HexDirection ownDirection = OwnUnitOverlayDirection;
         HideArrows();
 
-        if (scene.CombatManager.AttackerSecondMove == null)
+        if (CombatManager.Instance.AttackerSecondMove == null)
         {
             DisplayArrows(HexTools.Neighbor(ownHex, ownDirection), HexTools.AdjacentDirection(ownDirection, turn));
         }
@@ -53,7 +66,7 @@ public class CombatOverlayManager : MonoBehaviour
         GameObject obj = DisplayArrow(ownHex, ownDirection, turn);
 
         //strzalka pokazujaca wybor
-        if (scene.CombatManager.AttackerSecondMove == null)
+        if (CombatManager.Instance.AttackerSecondMove == null)
         {
             arrowFirstMove = obj;
         }
@@ -73,16 +86,16 @@ public class CombatOverlayManager : MonoBehaviour
         {
             case "UiCoOvArrowLeft":
                 //przekazanie decyzji uzytkownika
-                scene.CombatManager.SetMove(HexDirectionChange.ToLeft, CombatRole.Attacker);
+                CombatManager.Instance.SetMove(HexDirectionChange.ToLeft, CombatRole.Attacker);
                 HelperServiceCombatOverlayClick(HexDirectionChange.ToLeft);
                 break;
             case "UiCoOvArrowForward":
                 //jw.
-                scene.CombatManager.SetMove(HexDirectionChange.NA, CombatRole.Attacker);
+                CombatManager.Instance.SetMove(HexDirectionChange.NA, CombatRole.Attacker);
                 HelperServiceCombatOverlayClick(HexDirectionChange.NA);
                 break;
             case "UiCoOvArrowRight":
-                scene.CombatManager.SetMove(HexDirectionChange.ToRight, CombatRole.Attacker);
+                CombatManager.Instance.SetMove(HexDirectionChange.ToRight, CombatRole.Attacker);
                 HelperServiceCombatOverlayClick(HexDirectionChange.ToRight);
                 break;
             default:
@@ -211,7 +224,6 @@ public class CombatOverlayManager : MonoBehaviour
 
     void Start()
     {
-        scene = SceneManagerReferences.Instance;
         closeButton.onClick.AddListener(HideCombatOverlayPanel); //tempshit, docelowo tu ma byc przekazanie informacji o cancl do managera stanow walki, a on pozleca schowanie roznych menu przy cancel
     }
 

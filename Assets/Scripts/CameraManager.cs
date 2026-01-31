@@ -5,6 +5,17 @@ using UnityEngine.UIElements;
 
 public class CameraManager : MonoBehaviour
 {
+    public static CameraManager Instance;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
 
 
     [SerializeField]

@@ -2,8 +2,23 @@ using UnityEngine;
 
 public class SceneState : MonoBehaviour
 {
-    [SerializeField]
-    private SceneManagerReferences scene;
+    public static SceneState Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+        }
+    }
+
+
+
 
 
 
