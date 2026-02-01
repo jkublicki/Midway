@@ -104,6 +104,30 @@ public class NetworkBridge : NetworkBehaviour
         CombatManager.Instance.Initialize(attakcerUnitId, defenderUnitId);
     }
 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void SubmitCombatMoveRpc(HexDirectionChange direction, CombatRole combatRole)
+    {
+        ServiceCombatMoveRpc(direction, combatRole);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ServiceCombatMoveRpc(HexDirectionChange direction, CombatRole combatRole)
+    {
+        CombatManager.Instance.SetMove(direction, combatRole);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void SubmitCombatDicesRpc(int d1, int? d2, int? d3, CombatRole combatRole)
+    {
+        ServiceCombatDicesRpc(d1, d2, d3, combatRole);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ServiceCombatDicesRpc(int d1, int? d2, int? d3, CombatRole combatRole)
+    {
+        CombatManager.Instance.SetDices(d1, d2, d3, combatRole);
+    }
+
 
     void Start()
     {

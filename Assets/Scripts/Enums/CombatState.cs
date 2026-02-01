@@ -7,5 +7,7 @@ public enum CombatState
     AwaitingDefenderCard,
     AwaitingAttackerCard,
     Dogfight,
+    //DogfightDices,
+    //DogfightResolution,
     Finished
 }

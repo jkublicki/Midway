@@ -1,11 +1,7 @@
 # TODO
 
-rozwiązać problem: BattleSceneManager powstaje wraz ze sceną, a przechowuje informację o lokalnym graczu, która powstaje 
--> wyniesc to do tego networkowego gowna i zabrac z battle scene managera
+>>> po wylosowaniu kosci nie moze byc pojscia dalej jak obecnie; musi być osobny stan i warunek wejscia ze sa dices - bo to musi przejsc przez siec
 
-
-wymyślić jak ma wyglądać walka po sieci
-bo: co innego robi ten manager dla zaatakowanego i dla atakującego
 
 
 
@@ -19,7 +15,6 @@ dodac obsluge sieciowa cbt //łącznie 8
 - rezultat od inicjatora //0.5
 - różne emergent przy okazji //3
 
-//poprawić elastyczność elementow ui //2
 dodac sterowanie kam na mobile //1
 oddalić kam na desktop, zbliżyć na mobile //0.5
 
@@ -35,7 +30,7 @@ zarządzanie trami
 - obsługa sieciowa zakończenia tr
 
 
-
+//poprawić elastyczność elementow ui //2
 //dodac obsluge sieciowa move x2, 
 //dodac obsluge sieciowa swap x3, destroy //2h 
 //wymienić managery na singletony //1h

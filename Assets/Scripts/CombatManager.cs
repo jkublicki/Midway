@@ -27,7 +27,7 @@ public class CombatManager : MonoBehaviour
     private UnitManager.Unit ownUnitBackup;
     private UnitManager.Unit enemyUnitBackup;
 
-    private CombatRole? ownCombatRole;
+    public CombatRole? OwnCombatRole;
 
     private CombatState state;
     private float stateEnterTime;
@@ -41,6 +41,9 @@ public class CombatManager : MonoBehaviour
     private bool defenderCanDie = false;
     private int attackerDiceCount = 0;
     private int defenderDiceCount = 0;
+
+    List<int> attackerDices = new List<int>();
+    List<int> defenderDices = new List<int>();
 
 
 
@@ -56,7 +59,7 @@ public class CombatManager : MonoBehaviour
     private Dictionary<CombatState, float> StateTimeouts = new Dictionary<CombatState, float>
     {
         { CombatState.AutofilingMoves, 2.0f },
-        { CombatState.AwaitingMoves, 15.0f },
+        { CombatState.AwaitingMoves, 60.0f }, //domyslnie 15.0f?
         { CombatState.AwaitingDefenderCard, 10.0f },
         { CombatState.AwaitingAttackerCard, 10.0f }
     };
@@ -82,7 +85,7 @@ public class CombatManager : MonoBehaviour
 
         if (attackerUnit.Player == LobbyManager.Instance.LocalPlayer)
         {
-            ownCombatRole = CombatRole.Attacker;
+            OwnCombatRole = CombatRole.Attacker;
             ownUnit = attackerUnit;
             enemyUnit = defenderUnit;
 
@@ -91,7 +94,7 @@ public class CombatManager : MonoBehaviour
         }
         else
         {
-            ownCombatRole = CombatRole.Defender;
+            OwnCombatRole = CombatRole.Defender;
             ownUnit = defenderUnit;
             enemyUnit = attackerUnit;
 
@@ -107,13 +110,16 @@ public class CombatManager : MonoBehaviour
     }
 
 
-    public void SetMove(HexDirectionChange direction, CombatRole combatRole)
+
+
+    public void SetMove(HexDirectionChange direction, CombatRole combatRole) //zast¹piæ send
     {
         if (combatRole == CombatRole.Attacker)
         {
             if (attackerFirstMove == null)
             {
-                attackerFirstMove = direction;
+                attackerFirstMove = direction; //zastapic submit
+                Debug.Log("AttackerFirstMove set: " + AttackerFirstMove);
             }
             else
             {
@@ -126,10 +132,41 @@ public class CombatManager : MonoBehaviour
             if (defenderFirstMove == null)
             {
                 defenderFirstMove = direction;
+                Debug.Log("DefenderFirstMove set: " + DefenderFirstMove);
             }
             else
             {
                 defenderSecondMove = direction;
+                Debug.Log("DefenderSecondMove set: " + DefenderSecondMove);
+            }
+        }
+    }
+
+
+    public void SetDices(int d1, int? d2, int? d3, CombatRole combatRole)
+    {
+        if (combatRole == CombatRole.Attacker)
+        {
+            attackerDices.Add(d1);
+            if (d2 != null)
+            {
+                attackerDices.Add((int)d2);
+            }
+            if (d3 != null)
+            {
+                attackerDices.Add((int)d3);
+            }
+        }
+        else
+        {
+            defenderDices.Add(d1);
+            if (d2 != null)
+            {
+                defenderDices.Add((int)d2);
+            }
+            if (d3 != null)
+            {
+                defenderDices.Add((int)d3);
             }
         }
     }
@@ -308,7 +345,7 @@ public class CombatManager : MonoBehaviour
     {
         ChangeCombatState(CombatState.NoCombat);
 
-        ownCombatRole = null;
+        OwnCombatRole = null;
 
         ownUnit = null;
         ownUnitBackup = null;
@@ -329,8 +366,8 @@ public class CombatManager : MonoBehaviour
         defenderFirstMove = null;
         defenderSecondMove = null;
 
-
-
+        attackerDices.Clear();
+        defenderDices.Clear();
     }
 
 
@@ -349,7 +386,7 @@ public class CombatManager : MonoBehaviour
                 CombatOverlayManager.Instance.DisplayEnemyHighlight(enemyUnit.HexCoords);
                 //pokazac iterfejsy obroncy
                 //tymczasowy brudny test
-                TempshitTestSetEnemyMoves();
+                    //TempshitTestSetEnemyMoves();
                 break;
             case CombatState.AutofilingMoves:
                 //tempshit do testow, docelowo to przyjdzie od klienta drugiego gracza, z nieistniejacego jeszcze interfejsu
@@ -432,17 +469,15 @@ public class CombatManager : MonoBehaviour
                         break;
                 }
 
-                List<int> attackerDices = new List<int>();
+                List<int> dices = new List<int>();
                 for (int i = 0; i < attackerDiceCount; i++)
                 {
-                    attackerDices.Add(UnityEngine.Random.Range(1, 8));
+                    dices.Add(UnityEngine.Random.Range(1, 8));
                 }
+                NetworkBridge.Instance.SubmitCombatDicesRpc(dices[0], dices.Count > 1 ? dices[1] : null, dices.Count > 2 ? dices[2] : null, (CombatRole)OwnCombatRole);
 
-                List<int> defenderDices = new List<int>();
-                for (int i = 0; i < defenderDiceCount; i++)
-                {
-                    defenderDices.Add(UnityEngine.Random.Range(1, 8));
-                }
+
+                // >>>>>>> tu rozdzielic stan dogfight!!!
 
 
                 Debug.Log("Walka powietrzna; interakcja napastnika: " + attackerInteraction + ", zaatakowanego: " + defenderInteraction + ". Kosci/karty napastnika: "

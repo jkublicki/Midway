@@ -86,16 +86,25 @@ public class CombatOverlayManager : MonoBehaviour
         {
             case "UiCoOvArrowLeft":
                 //przekazanie decyzji uzytkownika
-                CombatManager.Instance.SetMove(HexDirectionChange.ToLeft, CombatRole.Attacker);
+                //CombatManager.Instance.SendMove(HexDirectionChange.ToLeft);
+
+                NetworkBridge.Instance.SubmitCombatMoveRpc(HexDirectionChange.ToLeft, (CombatRole)CombatManager.Instance.OwnCombatRole);
+
+
                 HelperServiceCombatOverlayClick(HexDirectionChange.ToLeft);
                 break;
             case "UiCoOvArrowForward":
                 //jw.
-                CombatManager.Instance.SetMove(HexDirectionChange.NA, CombatRole.Attacker);
+                //CombatManager.Instance.SetMove(HexDirectionChange.NA);
+                NetworkBridge.Instance.SubmitCombatMoveRpc(HexDirectionChange.NA, (CombatRole)CombatManager.Instance.OwnCombatRole);
+
                 HelperServiceCombatOverlayClick(HexDirectionChange.NA);
                 break;
             case "UiCoOvArrowRight":
-                CombatManager.Instance.SetMove(HexDirectionChange.ToRight, CombatRole.Attacker);
+                //CombatManager.Instance.SetMove(HexDirectionChange.ToRight);
+                NetworkBridge.Instance.SubmitCombatMoveRpc(HexDirectionChange.ToRight, (CombatRole)CombatManager.Instance.OwnCombatRole);
+
+
                 HelperServiceCombatOverlayClick(HexDirectionChange.ToRight);
                 break;
             default:
