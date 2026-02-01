@@ -23,7 +23,7 @@ public class CombatOverlayManager : MonoBehaviour
 
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
 
     [SerializeField] private GameObject combatOverlayPanel;
     [SerializeField] private Button closeButton;
@@ -227,7 +227,7 @@ public class CombatOverlayManager : MonoBehaviour
         closeButton.onClick.AddListener(HideCombatOverlayPanel); //tempshit, docelowo tu ma byc przekazanie informacji o cancl do managera stanow walki, a on pozleca schowanie roznych menu przy cancel
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         

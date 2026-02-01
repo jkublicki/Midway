@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class MenuCanvasManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
 
     public static MenuCanvasManager Instance { get; private set; }
 
@@ -190,7 +190,7 @@ public class MenuCanvasManager : MonoBehaviour
 
     }
 
-    // Update is called once per frame
+    
     /*
     void Update()
     {

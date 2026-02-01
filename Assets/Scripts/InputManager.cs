@@ -19,7 +19,7 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && !SceneState.Instance.UnitMovementInProgress)
+        if (Input.GetMouseButtonDown(0) && BattleSceneState.Instance != null && !BattleSceneState.Instance.UnitMovementInProgress)
         {
             HandleClick();
         }

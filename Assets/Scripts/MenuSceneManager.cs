@@ -96,7 +96,7 @@ public class MenuSceneManager : MonoBehaviour
         Instance = this;
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
     async void Start()
     {
         while (!UnityServicesInitializer.Instance.IsReady)
@@ -108,7 +108,7 @@ public class MenuSceneManager : MonoBehaviour
     }
 
 
-    // Update is called once per frame
+    
     void Update()
     {
         

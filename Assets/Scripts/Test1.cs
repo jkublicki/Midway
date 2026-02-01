@@ -18,11 +18,11 @@ public class Test1 : MonoBehaviour
 
     private void DebugSwitchPlayer()
     {
-        SceneState.Instance.EndTurn();
+        BattleSceneState.Instance.EndTurn();
     }
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
     void Start()
     {
         DebugTurnButton.onClick.AddListener(DebugSwitchPlayer);
@@ -56,7 +56,7 @@ public class Test1 : MonoBehaviour
     bool didIt = false;
 
 
-    // Update is called once per frame
+    
     void Update()
     {
         /*

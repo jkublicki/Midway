@@ -22,14 +22,13 @@ public class CombatManager : MonoBehaviour
     }
 
 
-
-
-
-
     private UnitManager.Unit ownUnit;
     private UnitManager.Unit enemyUnit;
     private UnitManager.Unit ownUnitBackup;
     private UnitManager.Unit enemyUnitBackup;
+
+    private CombatRole? ownCombatRole;
+
     private CombatState state;
     private float stateEnterTime;
     private HexDirectionChange? attackerFirstMove;
@@ -62,7 +61,8 @@ public class CombatManager : MonoBehaviour
         { CombatState.AwaitingAttackerCard, 10.0f }
     };
 
-    public void Initialize(UnitManager.Unit _ownUnit, UnitManager.Unit _enemyUnit)
+    /*
+    public void Initialize_old(UnitManager.Unit _ownUnit, UnitManager.Unit _enemyUnit)
     {
         //dane
         ownUnit = _ownUnit;
@@ -73,30 +73,38 @@ public class CombatManager : MonoBehaviour
         //stan poczatkowy
         ChangeCombatState(CombatState.AwaitingMoves);
     }
+    */
 
-    public void Cancel()
+    public void Initialize(string attackerUnitId, string defenderUnitId)
     {
-        if (defenderFirstMove != null)
+        UnitManager.Unit attackerUnit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID == attackerUnitId);
+        UnitManager.Unit defenderUnit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID == defenderUnitId);
+
+        if (attackerUnit.Player == LobbyManager.Instance.LocalPlayer)
         {
-            return;
+            ownCombatRole = CombatRole.Attacker;
+            ownUnit = attackerUnit;
+            enemyUnit = defenderUnit;
+
+            Debug.Log($"Your unit {ownUnit.ID} is attacking enemy unit {enemyUnit.ID}");
+
+        }
+        else
+        {
+            ownCombatRole = CombatRole.Defender;
+            ownUnit = defenderUnit;
+            enemyUnit = attackerUnit;
+
+            Debug.Log($"Enemy unit {enemyUnit.ID} is attacking your unit {ownUnit.ID}");
         }
 
-        //stan
-        state = CombatState.NoCombat;
+        ownUnitBackup = new UnitManager.Unit(ownUnit);
+        enemyUnitBackup = new UnitManager.Unit(enemyUnit);
 
-        //dane - czyszczenie wszystkich danych
-        Reset();
+        ChangeCombatState(CombatState.AwaitingMoves);
 
-        //ukrycie interfejsow
-        //chamskie bez sprawdzenia czy sa, ale powinny byc odporne na to - do refaktoryzacji?
-        CombatOverlayManager.Instance.HideCombatOverlayPanel();
-        CombatOverlayManager.Instance.HideArrows();
-        CombatOverlayManager.Instance.HideEnemyHighlight();
-        CombatOverlayManager.Instance.HideOwnHighlight();
-        //dodac ukrywanie interfejsow przeciwnika
+
     }
-
-
 
 
     public void SetMove(HexDirectionChange direction, CombatRole combatRole)
@@ -300,6 +308,7 @@ public class CombatManager : MonoBehaviour
     {
         ChangeCombatState(CombatState.NoCombat);
 
+        ownCombatRole = null;
 
         ownUnit = null;
         ownUnitBackup = null;
@@ -313,18 +322,13 @@ public class CombatManager : MonoBehaviour
 
         moveSequenceIsDone = false;
 
-        //private float stateEnterTime ??
+        stateEnterTime = 0.0f;
 
         attackerFirstMove = null;
         attackerSecondMove = null;
         defenderFirstMove = null;
         defenderSecondMove = null;
 
-        attackerCanDie = false;
-        defenderCanDie = false;
-        attackerDiceCount = 0;
-        defenderDiceCount = 0;
-        moveSequenceIsDone = false;
 
 
     }
@@ -495,7 +499,7 @@ public class CombatManager : MonoBehaviour
 
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
     void Start()
     {
         
@@ -503,7 +507,7 @@ public class CombatManager : MonoBehaviour
 
     
 
-    // Update is called once per frame
+    
     void Update()
     {
         switch (state)

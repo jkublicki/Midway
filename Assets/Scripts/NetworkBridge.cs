@@ -92,15 +92,25 @@ public class NetworkBridge : NetworkBehaviour
         UnitManager.Instance.DestroyUnit(unit);
     }
 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void SubmitInitializeCombatRpc(string attakcerUnitId, string defenderUnitId)
+    {
+        ServiceInitializeCombatRpc(attakcerUnitId, defenderUnitId);
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void ServiceInitializeCombatRpc(string attakcerUnitId, string defenderUnitId)
+    {
+        CombatManager.Instance.Initialize(attakcerUnitId, defenderUnitId);
+    }
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         

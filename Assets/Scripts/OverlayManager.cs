@@ -71,13 +71,13 @@ public class OverlayManager : MonoBehaviour
         TargetHexes.Clear();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
     void Start()
     {
         TargetHexes = new List<HexCoords>();
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         

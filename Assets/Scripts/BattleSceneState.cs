@@ -1,8 +1,13 @@
 using UnityEngine;
 
-public class SceneState : MonoBehaviour
+public class BattleSceneState : MonoBehaviour
 {
-    public static SceneState Instance { get; private set; }
+    public static BattleSceneState Instance { get; private set; }
+
+
+    //public Player? LocalPlayer = null;
+
+
 
     private void Awake()
     {
@@ -22,11 +27,7 @@ public class SceneState : MonoBehaviour
 
 
 
-    public enum Player
-    {
-        PLAYER_1,
-        PLAYER_2
-    }
+
 
     public bool UnitMovementInProgress = false;
 
@@ -52,11 +53,9 @@ public class SceneState : MonoBehaviour
     void Start()
     {
         activePlayer = Player.PLAYER_1;
-
-        
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         

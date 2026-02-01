@@ -11,6 +11,8 @@ public class LobbyManager : MonoBehaviour
 
     private Lobby currentLobby;
     public Lobby CurrentLobby => currentLobby; //read only
+    public Player? LocalPlayer = null;
+
 
     private float heartbeatTimer = 0f;
     private float lobbyUpdateTimer = 0f;
@@ -60,6 +62,9 @@ public class LobbyManager : MonoBehaviour
             };
 
             currentLobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, options);
+
+            LocalPlayer = Player.PLAYER_1; //tworzacy serwe jest graczem 1
+
             Debug.Log($"Lobby created: {currentLobby.Name} (ID: {currentLobby.Id})");
             return currentLobby;
         }
@@ -98,6 +103,9 @@ public class LobbyManager : MonoBehaviour
         try
         {
             currentLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobbyId);
+
+            LocalPlayer = Player.PLAYER_2; //dolaczajacy klient jest graczem 2
+
             Debug.Log($"Joined lobby: {currentLobby.Name}");
             return true;
         }
@@ -125,6 +133,9 @@ public class LobbyManager : MonoBehaviour
             {
                 await LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId);
                 currentLobby = null;
+
+                LocalPlayer = null;
+
             }
             catch (System.Exception e)
             {

@@ -1635,7 +1635,6 @@ GameObject:
   m_Component:
   - component: {fileID: 772092750}
   - component: {fileID: 772092751}
-  - component: {fileID: 772092752}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: Untagged
@@ -1677,31 +1676,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 772092748}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ca6edc5ea584df4ab8d7c5088ddd68f, type: 3}
+  m_Script: {fileID: 11500000, guid: 4938533840196a543a2ee7e941c65df5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Terrain: {fileID: 1245590695}
-  Unit: {fileID: 2056079117}
-  Overlay: {fileID: 1172910583}
-  Highlight: {fileID: 1584281990}
-  Orchestrator: {fileID: 1613023300}
-  SceneState: {fileID: 772092752}
-  CombatOverlay: {fileID: 1986612025}
-  CameraManager: {fileID: 1456865188}
-  CombatManager: {fileID: 108028912}
---- !u!114 &772092752
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 772092748}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66503f0e7e66ef5408a81ac280b1018f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scene: {fileID: 772092751}
   UnitMovementInProgress: 0
 --- !u!1 &832575517
 GameObject:
@@ -2531,7 +2508,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39da6d3faee190549ab4146716ceab1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Scene: {fileID: 772092751}
   DebugTurnButton: {fileID: 435050818}
   LogText: {fileID: 849498045}
 --- !u!4 &1191213411

@@ -45,7 +45,7 @@ public class UnitManager : MonoBehaviour
 
     public class Unit //https://x.com/i/grok?conversation=2005345584077517125
     {
-        public Unit(HexCoords _hexCoords, UnitType _unitType, HexDirection _direction, string _id, SceneState.Player _player, GameObject _gameObject = null) //GameObject jest opcjonalny
+        public Unit(HexCoords _hexCoords, UnitType _unitType, HexDirection _direction, string _id, Player _player, GameObject _gameObject = null) //GameObject jest opcjonalny
         {
             HexCoords = _hexCoords;
             GmObject = _gameObject;
@@ -75,7 +75,7 @@ public class UnitManager : MonoBehaviour
         public UnitType UnitType;
         public HexDirection Direction;
         public string ID;
-        public SceneState.Player Player;
+        public Player Player;
         public int MovesThisTurn;
         public bool AttackedThisTurn;
     }
@@ -89,13 +89,13 @@ public class UnitManager : MonoBehaviour
 
     private void SetInitialPositions() //tempshit?
     {
-        unitList.Add(new Unit(new HexCoords(-2, 2), UnitType.UsFighter, HexDirection.East, "usf1", SceneState.Player.PLAYER_1));
-        unitList.Add(new Unit(new HexCoords(-2, 3), UnitType.UsFighter, HexDirection.NorthWest, "usf2", SceneState.Player.PLAYER_1));
-        unitList.Add(new Unit(new HexCoords(3, -1), UnitType.UsFighter, HexDirection.SouthWest, "usf3", SceneState.Player.PLAYER_1));
+        unitList.Add(new Unit(new HexCoords(-2, 2), UnitType.UsFighter, HexDirection.East, "usf1", Player.PLAYER_1));
+        unitList.Add(new Unit(new HexCoords(-2, 3), UnitType.UsFighter, HexDirection.NorthWest, "usf2", Player.PLAYER_1));
+        unitList.Add(new Unit(new HexCoords(3, -1), UnitType.UsFighter, HexDirection.SouthWest, "usf3", Player.PLAYER_1));
 
-        unitList.Add(new Unit(new HexCoords(1, 0), UnitType.JpFighter, HexDirection.SouthEast, "jpf1", SceneState.Player.PLAYER_2));
-        unitList.Add(new Unit(new HexCoords(2, -3), UnitType.JpFighter, HexDirection.SouthEast, "jpf2", SceneState.Player.PLAYER_2));
-        unitList.Add(new Unit(new HexCoords(0, -2), UnitType.JpFighter, HexDirection.SouthWest, "jpf3", SceneState.Player.PLAYER_2));
+        unitList.Add(new Unit(new HexCoords(1, 0), UnitType.JpFighter, HexDirection.SouthEast, "jpf1", Player.PLAYER_2));
+        unitList.Add(new Unit(new HexCoords(2, -3), UnitType.JpFighter, HexDirection.SouthEast, "jpf2", Player.PLAYER_2));
+        unitList.Add(new Unit(new HexCoords(0, -2), UnitType.JpFighter, HexDirection.SouthWest, "jpf3", Player.PLAYER_2));
     }
 
     private void SpawnUnitGameObjects()
@@ -242,10 +242,10 @@ public class UnitManager : MonoBehaviour
         Vector3 targetPosition = new Vector3(HexTools.HexCoordsToCart(targetHex).x, unit.GmObject.transform.position.y, HexTools.HexCoordsToCart(targetHex).y);
 
 
-        SceneState.Instance.UnitMovementInProgress = true;
+        BattleSceneState.Instance.UnitMovementInProgress = true;
         Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexDirectionChange.NA, false, () =>
         {
-            SceneState.Instance.UnitMovementInProgress = false;
+            BattleSceneState.Instance.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
             unit.HexCoords = targetHex;
         }        
@@ -263,10 +263,10 @@ public class UnitManager : MonoBehaviour
         Vector3 targetPosition = new Vector3(HexTools.HexCoordsToCart(targetHex).x, unit.GmObject.transform.position.y, HexTools.HexCoordsToCart(targetHex).y);
 
 
-        SceneState.Instance.UnitMovementInProgress = true;
+        BattleSceneState.Instance.UnitMovementInProgress = true;
         Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexDirectionChange.ToLeft, false, () =>
         {
-            SceneState.Instance.UnitMovementInProgress = false;
+            BattleSceneState.Instance.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
             unit.HexCoords = targetHex;
             //dodaæ zmianê direction
@@ -286,10 +286,10 @@ public class UnitManager : MonoBehaviour
         Vector3 targetPosition = new Vector3(HexTools.HexCoordsToCart(targetHex).x, unit.GmObject.transform.position.y, HexTools.HexCoordsToCart(targetHex).y);
 
 
-        SceneState.Instance.UnitMovementInProgress = true;
+        BattleSceneState.Instance.UnitMovementInProgress = true;
         Coroutine coroutine = StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, targetPosition, HexDirectionChange.ToRight, false, () =>
         {
-            SceneState.Instance.UnitMovementInProgress = false;
+            BattleSceneState.Instance.UnitMovementInProgress = false;
             unit.MovesThisTurn++;
             unit.HexCoords = targetHex;
             //dodaæ zmianê direction
@@ -305,10 +305,10 @@ public class UnitManager : MonoBehaviour
     {
         Vector3 destinationPosition = new Vector3(HexTools.HexCoordsToCart(destination).x, unit.GmObject.transform.position.y, HexTools.HexCoordsToCart(destination).y);
 
-        SceneState.Instance.UnitMovementInProgress = true;
+        BattleSceneState.Instance.UnitMovementInProgress = true;
         StartCoroutine(MoveObject(unit.GmObject.transform, unit.GmObject.transform.position, destinationPosition, HexDirectionChange.NA, true, () =>
         {
-            SceneState.Instance.UnitMovementInProgress = false;
+            BattleSceneState.Instance.UnitMovementInProgress = false;
             unit.HexCoords = destination;
         }
         ));
@@ -316,7 +316,7 @@ public class UnitManager : MonoBehaviour
 
     }
 
-    public void OnTurnStart(SceneState.Player player)
+    public void OnTurnStart(Player player)
     {
         foreach (Unit u in unitList.Where(u => u.Player == player))
         {
@@ -332,7 +332,7 @@ public class UnitManager : MonoBehaviour
     }
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
     void Start()
     {
 
@@ -342,7 +342,7 @@ public class UnitManager : MonoBehaviour
 
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         

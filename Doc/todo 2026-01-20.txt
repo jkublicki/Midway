@@ -1,12 +1,11 @@
 # TODO
 
-//dodac obsluge sieciowa move x2, 
-//dodac obsluge sieciowa swap x3, destroy //2h 
+rozwiązać problem: BattleSceneManager powstaje wraz ze sceną, a przechowuje informację o lokalnym graczu, która powstaje 
+-> wyniesc to do tego networkowego gowna i zabrac z battle scene managera
 
 
-
-wymienić managery na singletony //1h
-wymienić dziwne odwołania do singletonów na normalne //1h
+wymyślić jak ma wyglądać walka po sieci
+bo: co innego robi ten manager dla zaatakowanego i dla atakującego
 
 
 
@@ -36,4 +35,9 @@ zarządzanie trami
 - obsługa sieciowa zakończenia tr
 
 
+
+//dodac obsluge sieciowa move x2, 
+//dodac obsluge sieciowa swap x3, destroy //2h 
+//wymienić managery na singletony //1h
+//wymienić dziwne odwołania do singletonów na normalne //1h
 
