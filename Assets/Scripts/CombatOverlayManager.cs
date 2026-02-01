@@ -58,7 +58,10 @@ public class CombatOverlayManager : MonoBehaviour
         HexDirection ownDirection = OwnUnitOverlayDirection;
         HideArrows();
 
-        if (CombatManager.Instance.AttackerSecondMove == null)
+
+
+        if ((CombatManager.Instance.OwnCombatRole == CombatRole.Attacker && CombatManager.Instance.AttackerSecondMove == null)
+            || (CombatManager.Instance.OwnCombatRole == CombatRole.Defender && CombatManager.Instance.DefenderSecondMove == null))
         {
             DisplayArrows(HexTools.Neighbor(ownHex, ownDirection), HexTools.AdjacentDirection(ownDirection, turn));
         }
@@ -66,7 +69,8 @@ public class CombatOverlayManager : MonoBehaviour
         GameObject obj = DisplayArrow(ownHex, ownDirection, turn);
 
         //strzalka pokazujaca wybor
-        if (CombatManager.Instance.AttackerSecondMove == null)
+        if ((CombatManager.Instance.OwnCombatRole == CombatRole.Attacker && CombatManager.Instance.AttackerSecondMove == null)
+            || (CombatManager.Instance.OwnCombatRole == CombatRole.Defender && CombatManager.Instance.DefenderSecondMove == null))
         {
             arrowFirstMove = obj;
         }

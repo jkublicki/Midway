@@ -6,8 +6,8 @@ public enum CombatState
     RevealingMoves,
     AwaitingDefenderCard,
     AwaitingAttackerCard,
-    Dogfight,
-    //DogfightDices,
-    //DogfightResolution,
+    //Dogfight,
+    AwaitingDices,
+    CombatResolution,
     Finished
 }

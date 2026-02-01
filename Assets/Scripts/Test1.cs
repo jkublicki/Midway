@@ -35,7 +35,7 @@ public class Test1 : MonoBehaviour
             string logWithTimestamp = $"[{timestamp}] {log}";
 
             var oldLines = LogText.text.Split(new[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries);
-            var keepLines = oldLines.Skip(System.Math.Max(0, oldLines.Length - 3)); // keep last 3 lines
+            var keepLines = oldLines.Skip(System.Math.Max(0, oldLines.Length - 6)); // keep last 3 lines
             LogText.text = string.Join("\r\n", keepLines) + "\r\n" + logWithTimestamp;
         };
 

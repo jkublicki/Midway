@@ -117,14 +117,16 @@ public class NetworkBridge : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void SubmitCombatDicesRpc(int d1, int? d2, int? d3, CombatRole combatRole)
+    public void SubmitCombatDicesRpc(int d1, int d2, int d3, CombatRole combatRole)
     {
+        //-1 oznacza null; rpc jest niekompatybilne z int?
         ServiceCombatDicesRpc(d1, d2, d3, combatRole);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void ServiceCombatDicesRpc(int d1, int? d2, int? d3, CombatRole combatRole)
+    private void ServiceCombatDicesRpc(int d1, int d2, int d3, CombatRole combatRole)
     {
+        //-1 oznacza null
         CombatManager.Instance.SetDices(d1, d2, d3, combatRole);
     }
 

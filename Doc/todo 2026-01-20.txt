@@ -1,8 +1,8 @@
 # TODO
 
->>> po wylosowaniu kosci nie moze byc pojscia dalej jak obecnie; musi być osobny stan i warunek wejscia ze sa dices - bo to musi przejsc przez siec
-
-
+do refaktoryzacji own/enemy unit i att/def unit !!! 
+- wszedzie jest potrzebne zejscie z założenia że own=attacker - przy interaction zones itp
+- są bugi z combat overlay przy revealing moves
 
 
 dodac obsluge sieciowa cbt //łącznie 8
