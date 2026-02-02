@@ -242,7 +242,10 @@ public class CombatManager : MonoBehaviour
 
 
         //attacker 1
-        CombatOverlayManager.Instance.HideArrow(1);
+        if (OwnCombatRole == CombatRole.Attacker)
+        {
+            CombatOverlayManager.Instance.HideArrow(1);
+        }
         UnitManager.Unit unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(attUnit.HexCoords, attUnit.Direction)));
         if (unitToSwap != null)
         {
@@ -265,6 +268,10 @@ public class CombatManager : MonoBehaviour
         attUnit.MovesThisTurn--;
 
         //defender 1
+        if (OwnCombatRole == CombatRole.Defender)
+        {
+            CombatOverlayManager.Instance.HideArrow(1);
+        }
         unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(defUnit.HexCoords, defUnit.Direction)));
         if (unitToSwap != null)
         {
@@ -286,7 +293,10 @@ public class CombatManager : MonoBehaviour
         defUnit.MovesThisTurn--;
 
         //attacker 2
-        CombatOverlayManager.Instance.HideArrow(2);
+        if (OwnCombatRole == CombatRole.Attacker)
+        {
+            CombatOverlayManager.Instance.HideArrow(2);
+        }
         unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(attUnit.HexCoords, attUnit.Direction)));
         if (unitToSwap != null)
         {
@@ -308,6 +318,10 @@ public class CombatManager : MonoBehaviour
         attUnit.MovesThisTurn--;
 
         //defender 2
+        if (OwnCombatRole == CombatRole.Defender)
+        {
+            CombatOverlayManager.Instance.HideArrow(2);
+        }
         unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(defUnit.HexCoords, defUnit.Direction)));
         if (unitToSwap != null)
         {

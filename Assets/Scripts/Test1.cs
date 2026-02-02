@@ -45,7 +45,12 @@ public class Test1 : MonoBehaviour
 
         //Debug.Log(HexTools.RotateVector(new HexCoords(-2, 2), HexDirection.West, HexDirection.NorthWest).ToString());
 
-
+        /*
+        for (int i = 0; i < 100; i++)
+        {
+            Debug.Log(TitleGenerator.GetTitle());
+        }
+        */
 
         //Debug.Log(HexTools.HexDistance(new HexCoords(-1, -2), new HexCoords(2, 1)).ToString());
 

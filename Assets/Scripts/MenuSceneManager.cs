@@ -57,7 +57,7 @@ public class MenuSceneManager : MonoBehaviour
         }
 
         // Create Lobby
-        string lobbyName = $"Game_{UnityEngine.Random.Range(1000, 9999)}";
+        string lobbyName = TitleGenerator.GetTitle();
         var lobby = await LobbyManager.Instance.CreateLobby(lobbyName, 2, relayJoinCode);
         if (lobby == null)
         {

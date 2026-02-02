@@ -59,24 +59,21 @@ public class CombatOverlayManager : MonoBehaviour
         HideArrows();
 
 
-
-        if ((CombatManager.Instance.OwnCombatRole == CombatRole.Attacker && CombatManager.Instance.AttackerSecondMove == null)
-            || (CombatManager.Instance.OwnCombatRole == CombatRole.Defender && CombatManager.Instance.DefenderSecondMove == null))
-        {
-            DisplayArrows(HexTools.Neighbor(ownHex, ownDirection), HexTools.AdjacentDirection(ownDirection, turn));
-        }
-
         GameObject obj = DisplayArrow(ownHex, ownDirection, turn);
 
         //strzalka pokazujaca wybor
-        if ((CombatManager.Instance.OwnCombatRole == CombatRole.Attacker && CombatManager.Instance.AttackerSecondMove == null)
-            || (CombatManager.Instance.OwnCombatRole == CombatRole.Defender && CombatManager.Instance.DefenderSecondMove == null))
+        if (arrowSecondMove == null && arrowFirstMove == null)
         {
             arrowFirstMove = obj;
         }
         else
         {
             arrowSecondMove = obj;
+        }
+
+        if (arrowSecondMove == null)
+        {
+            DisplayArrows(HexTools.Neighbor(ownHex, ownDirection), HexTools.AdjacentDirection(ownDirection, turn));
         }
     }
 
@@ -237,7 +234,7 @@ public class CombatOverlayManager : MonoBehaviour
 
     void Start()
     {
-        closeButton.onClick.AddListener(HideCombatOverlayPanel); //tempshit, docelowo tu ma byc przekazanie informacji o cancl do managera stanow walki, a on pozleca schowanie roznych menu przy cancel
+        
     }
 
     
