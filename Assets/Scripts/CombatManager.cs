@@ -22,10 +22,10 @@ public class CombatManager : MonoBehaviour
     }
 
 
-    private UnitManager.Unit ownUnit;
-    private UnitManager.Unit enemyUnit;
-    private UnitManager.Unit ownUnitBackup;
-    private UnitManager.Unit enemyUnitBackup;
+    private UnitManager.Unit attackerUnit;
+    private UnitManager.Unit defenderUnit;
+    private UnitManager.Unit attackerUnitBackup;
+    private UnitManager.Unit defenderUnitBackup;
 
     public CombatRole? OwnCombatRole;
 
@@ -64,52 +64,27 @@ public class CombatManager : MonoBehaviour
         { CombatState.AwaitingAttackerCard, 10.0f }
     };
 
-    /*
-    public void Initialize_old(UnitManager.Unit _ownUnit, UnitManager.Unit _enemyUnit)
-    {
-        //dane
-        ownUnit = _ownUnit;
-        ownUnitBackup = new UnitManager.Unit(_ownUnit);
-        enemyUnit = _enemyUnit;
-        enemyUnitBackup = new UnitManager.Unit(_enemyUnit);
-
-        //stan poczatkowy
-        ChangeCombatState(CombatState.AwaitingMoves);
-    }
-    */
-
     public void Initialize(string attackerUnitId, string defenderUnitId)
     {
-        UnitManager.Unit attackerUnit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID == attackerUnitId);
-        UnitManager.Unit defenderUnit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID == defenderUnitId);
+        attackerUnit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID == attackerUnitId);
+        defenderUnit = UnitManager.Instance.UnitList.FirstOrDefault(u => u.ID == defenderUnitId);
 
         if (attackerUnit.Player == LobbyManager.Instance.LocalPlayer)
         {
             OwnCombatRole = CombatRole.Attacker;
-            ownUnit = attackerUnit;
-            enemyUnit = defenderUnit;
-
-            Debug.Log($"Your unit {ownUnit.ID} is attacking enemy unit {enemyUnit.ID}");
-
+            Debug.Log($"Your unit {attackerUnit.ID} is attacking enemy unit {defenderUnit.ID}");
         }
         else
         {
             OwnCombatRole = CombatRole.Defender;
-            ownUnit = defenderUnit;
-            enemyUnit = attackerUnit;
-
-            Debug.Log($"Enemy unit {enemyUnit.ID} is attacking your unit {ownUnit.ID}");
+            Debug.Log($"Enemy unit {attackerUnit.ID} is attacking your unit {defenderUnit.ID}");
         }
 
-        ownUnitBackup = new UnitManager.Unit(ownUnit);
-        enemyUnitBackup = new UnitManager.Unit(enemyUnit);
+        attackerUnitBackup = new UnitManager.Unit(attackerUnit);
+        defenderUnitBackup = new UnitManager.Unit(defenderUnit);
 
         ChangeCombatState(CombatState.AwaitingMoves);
-
-
     }
-
-
 
 
     public void SetMove(HexDirectionChange direction, CombatRole combatRole) //zast¹piæ send
@@ -171,26 +146,6 @@ public class CombatManager : MonoBehaviour
         }
     }
 
-
-    void TempshitTestSetEnemyMoves()
-    {
-        static HexDirectionChange RandomDir()
-        {
-            var values = Enum.GetValues(typeof(HexDirectionChange));
-            return (HexDirectionChange)values.GetValue(UnityEngine.Random.Range(0, values.Length));
-        }
-
-        if (defenderFirstMove == null)
-        {
-            defenderFirstMove = RandomDir();
-        }
-        if (defenderSecondMove == null)
-        {
-            defenderSecondMove = RandomDir();
-        }
-    }
-
-
     private void AutofillMoves()
     {
         //przeniesc do hextools?
@@ -226,121 +181,106 @@ public class CombatManager : MonoBehaviour
         CombatOverlayManager.Instance.HideOwnHighlight();
         CombatOverlayManager.Instance.HideEnemyHighlight();
 
-        UnitManager.Unit attUnit = null;
-        UnitManager.Unit defUnit = null;
-        if (OwnCombatRole == CombatRole.Attacker)
-        {
-            attUnit = ownUnit;
-            defUnit = enemyUnit;
-        }
-        else
-        {
-            attUnit = enemyUnit;
-            defUnit = ownUnit;
-        }
-
-
-
         //attacker 1
         if (OwnCombatRole == CombatRole.Attacker)
         {
             CombatOverlayManager.Instance.HideArrow(1);
         }
-        UnitManager.Unit unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(attUnit.HexCoords, attUnit.Direction)));
+        UnitManager.Unit unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(attackerUnit.HexCoords, attackerUnit.Direction)));
         if (unitToSwap != null)
         {
-            UnitManager.Instance.BeMoved(unitToSwap, attUnit.HexCoords);
+            UnitManager.Instance.BeMoved(unitToSwap, attackerUnit.HexCoords);
             unitToSwap = null;
         }
 
         if (attackerFirstMove == HexDirectionChange.NA)
         {
-            yield return UnitManager.Instance.MoveForward(attUnit);
+            yield return UnitManager.Instance.MoveForward(attackerUnit);
         }
         else if (attackerFirstMove == HexDirectionChange.ToLeft)
         {
-            yield return UnitManager.Instance.MoveLeft(attUnit);
+            yield return UnitManager.Instance.MoveLeft(attackerUnit);
         }
         else
         {
-            yield return UnitManager.Instance.MoveRight(attUnit);
+            yield return UnitManager.Instance.MoveRight(attackerUnit);
         }
-        attUnit.MovesThisTurn--;
+        attackerUnit.MovesThisTurn--;
 
         //defender 1
         if (OwnCombatRole == CombatRole.Defender)
         {
             CombatOverlayManager.Instance.HideArrow(1);
         }
-        unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(defUnit.HexCoords, defUnit.Direction)));
+        unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(defenderUnit.HexCoords, defenderUnit.Direction)));
         if (unitToSwap != null)
         {
-            UnitManager.Instance.BeMoved(unitToSwap, defUnit.HexCoords);
+            UnitManager.Instance.BeMoved(unitToSwap, defenderUnit.HexCoords);
             unitToSwap = null;
         }
         if (defenderFirstMove == HexDirectionChange.NA)
         {
-            yield return UnitManager.Instance.MoveForward(defUnit);
+            yield return UnitManager.Instance.MoveForward(defenderUnit);
         }
         else if (defenderFirstMove == HexDirectionChange.ToLeft)
         {
-            yield return UnitManager.Instance.MoveLeft(defUnit);
+            yield return UnitManager.Instance.MoveLeft(defenderUnit);
         }
         else
         {
-            yield return UnitManager.Instance.MoveRight(defUnit);
+            yield return UnitManager.Instance.MoveRight(defenderUnit);
         }
-        defUnit.MovesThisTurn--;
+        defenderUnit.MovesThisTurn--;
 
         //attacker 2
         if (OwnCombatRole == CombatRole.Attacker)
         {
             CombatOverlayManager.Instance.HideArrow(2);
         }
-        unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(attUnit.HexCoords, attUnit.Direction)));
+        unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(attackerUnit.HexCoords, attackerUnit.Direction)));
         if (unitToSwap != null)
         {
-            UnitManager.Instance.BeMoved(unitToSwap, attUnit.HexCoords);
+            UnitManager.Instance.BeMoved(unitToSwap, attackerUnit.HexCoords);
             unitToSwap = null;
         }        
         if (attackerSecondMove == HexDirectionChange.NA)
         {
-            yield return UnitManager.Instance.MoveForward(attUnit);
+            yield return UnitManager.Instance.MoveForward(attackerUnit);
         }
         else if (attackerSecondMove == HexDirectionChange.ToLeft)
         {
-            yield return UnitManager.Instance.MoveLeft(attUnit);
+            yield return UnitManager.Instance.MoveLeft(attackerUnit);
         }
         else
         {
-            yield return UnitManager.Instance.MoveRight(attUnit);
+            yield return UnitManager.Instance.MoveRight(attackerUnit);
         }
-        attUnit.MovesThisTurn--;
+        attackerUnit.MovesThisTurn--;
 
         //defender 2
         if (OwnCombatRole == CombatRole.Defender)
         {
             CombatOverlayManager.Instance.HideArrow(2);
         }
-        unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(defUnit.HexCoords, defUnit.Direction)));
+        unitToSwap = UnitManager.Instance.UnitList.FirstOrDefault(u => u.HexCoords.Equals(HexTools.Neighbor(defenderUnit.HexCoords, defenderUnit.Direction)));
         if (unitToSwap != null)
         {
-            UnitManager.Instance.BeMoved(unitToSwap, defUnit.HexCoords);
+            UnitManager.Instance.BeMoved(unitToSwap, defenderUnit.HexCoords);
             unitToSwap = null;
         }
         if (defenderSecondMove == HexDirectionChange.NA)
         {
-            yield return UnitManager.Instance.MoveForward(defUnit);
+            yield return UnitManager.Instance.MoveForward(defenderUnit);
         }
         else if (defenderSecondMove == HexDirectionChange.ToLeft)
         {
-            yield return UnitManager.Instance.MoveLeft(defUnit);
+            yield return UnitManager.Instance.MoveLeft(defenderUnit);
         }
         else
         {
-            yield return UnitManager.Instance.MoveRight(defUnit);
+            yield return UnitManager.Instance.MoveRight(defenderUnit);
         }
-        defUnit.MovesThisTurn--;
+        defenderUnit.MovesThisTurn--;
 
         moveSequenceIsDone = true;
     }
@@ -362,12 +302,6 @@ public class CombatManager : MonoBehaviour
     }
 
 
-
-
-
-
-
-
     //wyczyszczenie stanu combat managera - ma byc zawsze robione na koniec
     private void Reset()
     {
@@ -375,10 +309,10 @@ public class CombatManager : MonoBehaviour
 
         OwnCombatRole = null;
 
-        ownUnit = null;
-        ownUnitBackup = null;
-        enemyUnit = null;
-        enemyUnitBackup = null;
+        attackerUnit = null;
+        attackerUnitBackup = null;
+        defenderUnit = null;
+        defenderUnitBackup = null;
 
         attackerCanDie = false;
         defenderCanDie = false;
@@ -402,22 +336,31 @@ public class CombatManager : MonoBehaviour
 
     private void OnStateEnter(CombatState entering)
     {
+        UnitManager.Unit ownUnit = null;
+        UnitManager.Unit enemyUnit = null;
+        if (OwnCombatRole == CombatRole.Attacker)
+        {
+            ownUnit = attackerUnit;
+            enemyUnit = defenderUnit;
+        }
+        else
+        {
+            ownUnit = defenderUnit;
+            enemyUnit = attackerUnit;
+        }
+
+
         switch (state)
         {
             case CombatState.AwaitingMoves:
 
-                ownUnit.AttackedThisTurn = true;
+                attackerUnit.AttackedThisTurn = true;
                 //interfejsy
-                    //CombatOverlayManager.Instance.ShowCombatOverlayPanel();
                 CombatOverlayManager.Instance.DisplayArrows(ownUnit.HexCoords, ownUnit.Direction);
                 CombatOverlayManager.Instance.DisplayOwnHighlight(ownUnit.HexCoords);
                 CombatOverlayManager.Instance.DisplayEnemyHighlight(enemyUnit.HexCoords);
-                //pokazac iterfejsy obroncy
-                //tymczasowy brudny test
-                    //TempshitTestSetEnemyMoves();
                 break;
             case CombatState.AutofilingMoves:
-                //tempshit do testow, docelowo to przyjdzie od klienta drugiego gracza, z nieistniejacego jeszcze interfejsu
                 AutofillMoves();
                 CombatOverlayManager.Instance.HideArrows();
                 break;
@@ -427,16 +370,16 @@ public class CombatManager : MonoBehaviour
                 break;
             case CombatState.AwaitingDices:
                 //sprawdzic czy ktorys (lub oba) wylecial za mape
-                if (!TerrainManager.Instance.TerrainHexCoordsList.Contains(ownUnit.HexCoords) || !TerrainManager.Instance.TerrainHexCoordsList.Contains(enemyUnit.HexCoords))
+                if (!TerrainManager.Instance.TerrainHexCoordsList.Contains(attackerUnit.HexCoords) || !TerrainManager.Instance.TerrainHexCoordsList.Contains(defenderUnit.HexCoords))
                 {
-                    if (!TerrainManager.Instance.TerrainHexCoordsList.Contains(ownUnit.HexCoords))
+                    if (!TerrainManager.Instance.TerrainHexCoordsList.Contains(attackerUnit.HexCoords))
                     {
-                        UnitManager.Instance.DestroyUnit(ownUnit);
+                        UnitManager.Instance.DestroyUnit(attackerUnit);
                         Debug.Log("Napastnik wylecia³ poza mapê i spad³ z braku paliwa.");
                     }
-                    if (!TerrainManager.Instance.TerrainHexCoordsList.Contains(enemyUnit.HexCoords))
+                    if (!TerrainManager.Instance.TerrainHexCoordsList.Contains(defenderUnit.HexCoords))
                     {
-                        UnitManager.Instance.DestroyUnit(enemyUnit);
+                        UnitManager.Instance.DestroyUnit(defenderUnit);
                         Debug.Log("Zaatakowany wylecia³ poza mapê i spad³ z braku paliwa.");
                     }
                     ChangeCombatState(CombatState.Finished);
@@ -444,30 +387,16 @@ public class CombatManager : MonoBehaviour
                 }
 
                 //sprawdzic odleglosc, skonczyc jesli > 3
-                if (HexTools.HexDistance(ownUnit.HexCoords, enemyUnit.HexCoords) > 3)
+                if (HexTools.HexDistance(attackerUnit.HexCoords, defenderUnit.HexCoords) > 3)
                 {
                     Debug.Log("Uczestnicy starcia oddalili siê od siebie.");
                     ChangeCombatState(CombatState.Finished);
                     break;
                 }
 
-                UnitManager.Unit attUnit = null;
-                UnitManager.Unit defUnit = null;
-                if (OwnCombatRole == CombatRole.Attacker)
-                {
-                    attUnit = ownUnit;
-                    defUnit = enemyUnit;
-                }
-                else
-                {
-                    attUnit = enemyUnit;
-                    defUnit = ownUnit;
-                }
 
-
-
-                InteractionAreaType? attackerInteraction = InteractionZone(attUnit.HexCoords, attUnit.Direction, attUnit.UnitType, defUnit.HexCoords);
-                InteractionAreaType? defenderInteraction = InteractionZone(defUnit.HexCoords, defUnit.Direction, defUnit.UnitType, attUnit.HexCoords);
+                InteractionAreaType? attackerInteraction = InteractionZone(attackerUnit.HexCoords, attackerUnit.Direction, attackerUnit.UnitType, defenderUnit.HexCoords);
+                InteractionAreaType? defenderInteraction = InteractionZone(defenderUnit.HexCoords, defenderUnit.Direction, defenderUnit.UnitType, attackerUnit.HexCoords);
                 if (attackerInteraction == null || defenderInteraction == null)
                 {
                     throw new Exception("Nie znaleziono interakcji");
@@ -527,30 +456,18 @@ public class CombatManager : MonoBehaviour
 
                 Debug.Log("Kosci/karty napastnika: " + string.Join(", ", attackerDices) + ". Kosci/karty zaatakowanego: " + string.Join(", ", defenderDices) + ".");
 
-                if (OwnCombatRole == CombatRole.Attacker)
-                {
-                    attUnit = ownUnit;
-                    defUnit = enemyUnit;
-                }
-                else
-                {
-                    attUnit = enemyUnit;
-                    defUnit = ownUnit;
-                }
-
-
 
                 if (attackerDices.Max() > defenderDices.Max() && defenderCanDie)
                 {
                     //smierc zaatakowanego
-                    UnitManager.Instance.DestroyUnit(defUnit);
+                    UnitManager.Instance.DestroyUnit(defenderUnit);
                     Debug.Log("Zaatakowany zostal zestrzelony!");
                 }
                 else
                 if (defenderDices.Max() > attackerDices.Max() && attackerCanDie)
                 {
                     //smierc napastnika
-                    UnitManager.Instance.DestroyUnit(attUnit);
+                    UnitManager.Instance.DestroyUnit(attackerUnit);
                     Debug.Log("Napastnik zostal zestrzelony!");
                 }
                 else
@@ -589,17 +506,12 @@ public class CombatManager : MonoBehaviour
     }
 
 
-
-
-    
     void Start()
     {
         
     }
 
-    
-
-    
+ 
     void Update()
     {
         switch (state)
